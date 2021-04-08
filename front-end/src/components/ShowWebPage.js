@@ -5,6 +5,7 @@ import { TextField, Button, Typography } from '@material-ui/core';
 import axios from 'axios';
 import ProgressIndicator from '../Utils/ProgressIndicator';
 import CropImage from './CropImage';
+import CropImageV2 from './CropImageV2';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -102,7 +103,7 @@ export default function ShowWebPage(props) {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12} />
-                                <CropImage src={screenShot} />
+                                <CropImageV2 src={screenShot} />
                             <Grid />
                         </>
                     }
