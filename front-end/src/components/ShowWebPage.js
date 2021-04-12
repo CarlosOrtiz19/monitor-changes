@@ -1,12 +1,11 @@
 import JsoupService from '../Service/JsoupService'
 import React, { useEffect, useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Button, Typography } from '@material-ui/core';
+import { TextField, Button, Typography, Grid} from '@material-ui/core';
 import axios from 'axios';
 import ProgressIndicator from '../Utils/ProgressIndicator';
 import CropImage from './CropImage';
 import CropImageV2 from './CropImageV2';
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
 

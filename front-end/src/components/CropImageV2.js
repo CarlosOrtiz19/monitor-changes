@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ReactCrop from 'react-image-crop';
-import { TextField, Button, Typography } from '@material-ui/core';
+import { TextField, Button, Typography,Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
 
 function generateDownload(canvas, crop) {
   if (!crop || !canvas) {
@@ -54,6 +55,7 @@ export default function CropImageV2(props) {
   const [completedCrop, setCompletedCrop] = useState(null);
 
   const [email, setEmail] = useState("")
+  
 
   /*const onSelectFile = (e) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -131,6 +133,12 @@ export default function CropImageV2(props) {
         Download cropped image
         </Button>
 
+        <Grid item xs={12}>
+                        <Typography >
+                            1. Insérez l'url que vous souhaitez surveiller
+                        </Typography>
+                    </Grid>
+
       <TextField id="outlined-size-normal"
         className={classes.textField}
         label="Email"
@@ -144,6 +152,7 @@ export default function CropImageV2(props) {
         placeholder="insert the email to notify"
         variant="outlined"
         onChange={e => setEmail(e.target.value)} />
+
 
     </div>
   );
