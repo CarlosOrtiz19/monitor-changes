@@ -89,6 +89,10 @@ export default function CropImageV2(props) {
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     ctx.imageSmoothingQuality = 'high';
 
+    console.log("crop.x")
+    console.log(crop.x)
+    console.log("crop.y")
+    console.log(crop.y)
     ctx.drawImage(
       image,
       crop.x * scaleX,
