@@ -30,6 +30,7 @@ app.get('/screenshot', async (req, res) => {
     res.end(screenshotBuffer);
 
     await browser.close();
+    next()
 })
 
 app.get('/cropImageSize', async (req, res) => {
@@ -45,26 +46,25 @@ app.get('/cropImageSize', async (req, res) => {
     const _height = Number(req.query.height);
     console.log(req.query.url)
 
-    console.log("top= "+ _top + "left= " + _left + "width = "+ _width +"_height" + _height)
+    console.log("top= " + _top + "left= " + _left + "width = " + _width + "_height" + _height)
 
     const screenshotBuffer = await page.screenshot({ fullPage: true });
-    
-    const size = 0;
+
+    var size = 0;
+
 
     if (screenshotBuffer != null) {
-        const outputImage = sharp(screenshotBuffer).extract({ width: _width, height: _height, left: _left, top: _top })
-           
-            console.log(outputImage.toBuffer())
+         await sharp(screenshotBuffer).extract({ width: _width, height: _height, left: _left, top: _top })
+            .toBuffer({ resolveWithObject: true })
+            .then(info => {
+
+                // Respond with the image
+               
+                console.log(info)
+                res.status(200).send(JSON.stringify(info.info));
+              
+            }).catch(err => console.log(err))
     }
-    
-
-
-    // Respond with the image
-    res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': screenshotBuffer.length
-    });
-    res.end(screenshotBuffer);
 
     await browser.close();
 })

@@ -1,5 +1,9 @@
 package com.pagewatcher.service;
 
+
+
+
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,16 +11,33 @@ import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.net.URI;
+import java.net.http.*;
+
 
 public class ServerExpressConnector {
 
+
+
     public static void main(String[] args) {
-        //Post data to server
-        HttpURLConnection conn = null;
         int left = 200;
         int top = 100;
         int width = 400;
         int height = 300;
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:4000/cropImageSize?url=http://mrbool.com/communicating-node-js-and-java-via-sockets/33819&top="+top+"&left="+left+"&width="+width+"&height="+height))
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenAccept(ScreenShotMapper::mapper)
+                .join();
+
+
+        //Post data to server
+       /* HttpURLConnection conn = null;
+
 
 
 
@@ -40,11 +61,14 @@ public class ServerExpressConnector {
                     conn.setUseCaches(false);
                     conn.setDoOutput(true);
 
+                    //ScreenShot screenShot =
+
                    /* DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
                     dos.writeBytes(strPostData);
                     dos.flush();
-                    dos.close();*/
-
+                    dos.close();
+                    System.out.println("response");
+                    System.out.println(conn.getContent().toString());
                     int intResponse = conn.getResponseCode();
                     System.out.println("\nSending 'GET' to " + url.toString() +
                             ", data: " + strPostData + ", rc: " + intResponse);;
@@ -56,7 +80,7 @@ public class ServerExpressConnector {
                     conn.disconnect();
                     conn = null;
                 }
-            }
+            }*/
 
 
     }
