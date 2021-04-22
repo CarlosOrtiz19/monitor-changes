@@ -19,15 +19,15 @@ public class ServerExpressConnector {
 
 
 
-    public static void main(String[] args) {
-        int left = 200;
+    /*public static void main(String[] args) {
+        int bottom = 200;
         int top = 100;
         int width = 400;
         int height = 300;
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:4000/cropImageSize?url=http://mrbool.com/communicating-node-js-and-java-via-sockets/33819&top="+top+"&left="+left+"&width="+width+"&height="+height))
+                .uri(URI.create("http://localhost:4000/cropImageSize?url=http://mrbool.com/communicating-node-js-and-java-via-sockets/33819&top="+top+"&left="+bottom+"&width="+width+"&height="+height))
                 .build();
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
@@ -83,6 +83,6 @@ public class ServerExpressConnector {
             }*/
 
 
-    }
+
 
 }

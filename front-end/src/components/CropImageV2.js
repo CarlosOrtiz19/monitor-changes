@@ -2,6 +2,8 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ReactCrop from 'react-image-crop';
 import { TextField, Button, Typography,Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import axios from 'axios';
+import JsoupService from '../Service/JsoupService';
 
 
 function generateDownload(canvas, crop) {
@@ -106,6 +108,14 @@ export default function CropImageV2(props) {
     );
   }, [completedCrop]);
 
+  const saveInformation = async() =>{
+
+    await JsoupService.saveInfoCrop(completedCrop,crop)
+  }
+
+
+ 
+
   return (
     <div className="App">
 
@@ -126,6 +136,16 @@ export default function CropImageV2(props) {
           }}
         />
       </div>
+
+      <Button
+        type="button"
+        disabled={!completedCrop?.width || !completedCrop?.height}
+        onClick={() =>
+          saveInformation()
+        }
+      >
+       save crop
+        </Button>
 
       <Button
         type="button"
