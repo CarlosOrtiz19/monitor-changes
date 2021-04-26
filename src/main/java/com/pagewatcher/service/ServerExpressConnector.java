@@ -1,88 +1,57 @@
 package com.pagewatcher.service;
 
 
+import com.pagewatcher.model.Crop;
+import com.pagewatcher.model.ScreenShot;
 
 
-
-import java.io.FileOutputStream;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.Socket;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 
-
+@Service
 public class ServerExpressConnector {
+    private final Logger LOGGER = Logger.getLogger(ServerExpressConnector.class.getName());
 
+    @Value("${com.pagewatcher.puppeteer}")
+    private String urlServer;
 
-
-    /*public static void main(String[] args) {
-        int bottom = 200;
-        int top = 100;
-        int width = 400;
-        int height = 300;
+    public ScreenShot mapper(Crop crop) throws IOException, InterruptedException {
+        System.out.println(crop);
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:4000/cropImageSize?url=http://mrbool.com/communicating-node-js-and-java-via-sockets/33819&top="+top+"&left="+bottom+"&width="+width+"&height="+height))
+                .uri(URI.create(urlServer+crop.getUrl()+
+                        "&top="+crop.getTop()+
+                        "&left="+ crop.getBottom()+
+                        "&width="+crop.getWidth()+
+                        "&height="+crop.getHeight()))
                 .build();
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .thenAccept(ScreenShotMapper::mapper)
-                .join();
+        HttpResponse<String> response =  client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        return Optional.ofNullable(ScreenShotMapper.mapperResponse(response.body())).orElse(new ScreenShot());
+    }
 
-        //Post data to server
-       /* HttpURLConnection conn = null;
+    public CompletableFuture<String> getAsyncResponseBody(Crop crop) {
+        LOGGER.info("Crop to proces" +crop);
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(urlServer+crop.getUrl()+
+                        "&top="+crop.getTop()+"&left="+
+                        crop.getBottom()+
+                        "&width="+crop.getWidth()+
+                        "&height="+crop.getHeight()))
+                .build();
 
-
-
-
-            try {
-                //Thread.sleep(DELAY_BETWEEN_POSTS);
-
-                URL url = new URL("http://localhost:4000/cropImageSize?url=http://mrbool.com/communicating-node-js-and-java-via-sockets/33819&top="+top+"&left="+left+"&width="+width+"&height="+height);
-                conn = (HttpURLConnection)url.openConnection();
-
-                if ( conn != null ) {
-                    //Whatever you wants to post...
-                    String strPostData = "https://en.wikipedia.org/wiki/Portal:Current_events";
-
-                    conn.setRequestMethod("GET");
-                    conn.setRequestProperty("User-Agent", "User-Agent");
-                    conn.setRequestProperty("Accept-Language", "en-GB,en;q=0.5");
-                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    conn.setRequestProperty("Content-length", Integer.toString(strPostData.length()));
-                    conn.setRequestProperty("Content-Language", "en-GB");
-                    conn.setRequestProperty("charset", "utf-8");
-                    conn.setUseCaches(false);
-                    conn.setDoOutput(true);
-
-                    //ScreenShot screenShot =
-
-                   /* DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
-                    dos.writeBytes(strPostData);
-                    dos.flush();
-                    dos.close();
-                    System.out.println("response");
-                    System.out.println(conn.getContent().toString());
-                    int intResponse = conn.getResponseCode();
-                    System.out.println("\nSending 'GET' to " + url.toString() +
-                            ", data: " + strPostData + ", rc: " + intResponse);;
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } finally {
-                if ( conn != null ) {
-                    conn.disconnect();
-                    conn = null;
-                }
-            }*/
-
-
-
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+    }
 
 }

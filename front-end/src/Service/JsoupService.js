@@ -2,28 +2,29 @@ import axios from 'axios';
 
 
 const BASE_URL = "http://localhost:8080/watch";
+const URL_NODE_SERVER = "http://localhost:4000";
 
-class ImageService{
+class ImageService {
 
-    async setState(url,session,cookie,start){
-        return axios.put(BASE_URL + "/run?url="+ url + "&session="+ session +  "&cookie=" + cookie +"&start=" +start);
+    async setState(url, session, cookie, start) {
+        return axios.put(BASE_URL + "/screenshot/run?url=" + url + "&session=" + session + "&cookie=" + cookie + "&start=" + start);
     }
-    async getScreenShot(url){
-        return axios.get("http://localhost:4000/screenshot?url="+url, {
+    async getScreenShot(url) {
+        return axios.get(URL_NODE_SERVER + "/screenshot/?url=" + url, {
             responseType: 'arraybuffer'
-          }).then(response => {
-              const buffer = Buffer.from(response.data, 'base64');
-          }).catch(ex => {
+        }).then(response => {
+            const buffer = Buffer.from(response.data, 'base64');
+        }).catch(ex => {
             console.error(ex);
-          });
-    
+        });
+
     }
 
-    async saveInfoCrop(_image,crop){
-        
-       
-        let data = new FormData();
-        data.append('file',crop)
+    async saveInfoCrop(crop, url) {
+
+
+        //let data = new FormData();
+        ///data.append('file',crop)
         /*data.append('name',_image.name)
         data.append('top',crop.x)
         data.append('bottom',crop.y)
@@ -35,12 +36,14 @@ class ImageService{
         console.log(crop.width)
         console.log(crop.height)*/
 
-        return axios.post(BASE_URL+"/saveCropInfo",data,{
-            headers: {
-                 'content-type': 'multipart/form-data'  
-             }
-        }).then(res => console.log(res))
-        .catch(err=>console.log(err))
+
+        return axios.get(URL_NODE_SERVER + "/cropImageSize/?url=" + url +
+            "&top=" + crop.x +
+            "&left=" + crop.y +
+            "&width=" + crop.width +
+            "&height=" + crop.height)
+            .then(res => console.log(res))
+            .catch(err => console.log(err.response))
     }
 
 }

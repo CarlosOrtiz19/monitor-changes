@@ -102,7 +102,7 @@ export default function ShowWebPage(props) {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12} />
-                                <CropImageV2 src={screenShot} />
+                                <CropImageV2 src={screenShot} url={url} />
                             <Grid />
                         </>
                     }

@@ -91,10 +91,10 @@ export default function CropImageV2(props) {
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     ctx.imageSmoothingQuality = 'high';
 
-    console.log("crop.x")
-    console.log(crop.x)
-    console.log("crop.y")
-    console.log(crop.y)
+    console.log("width",crop.width)
+    console.log("height",crop.height)
+    console.log("crop.x",crop.x)
+    console.log("crop.y",crop.y)
     ctx.drawImage(
       image,
       crop.x * scaleX,
@@ -110,7 +110,7 @@ export default function CropImageV2(props) {
 
   const saveInformation = async() =>{
 
-    await JsoupService.saveInfoCrop(completedCrop,crop)
+    await JsoupService.saveInfoCrop(crop,props.url)
   }
 
 

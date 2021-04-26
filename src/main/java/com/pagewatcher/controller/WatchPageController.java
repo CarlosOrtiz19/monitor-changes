@@ -1,7 +1,8 @@
 package com.pagewatcher.controller;
 
-import com.pagewatcher.model.CropImage;
+import com.pagewatcher.model.Crop;
 import com.pagewatcher.service.CropImageService;
+import com.pagewatcher.service.CropService;
 import com.pagewatcher.service.WatchPageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ public class WatchPageController {
     @Autowired
     private CropImageService cropImageService;
 
+    @Autowired
+    private CropService cropService;
+
     @GetMapping("/run")
     public ResponseEntity<String> getCandidatureById(@RequestParam String url,@RequestParam String session,
                                                      @RequestParam  String cookie) throws Exception {
@@ -27,8 +31,9 @@ public class WatchPageController {
     }
 
     @PostMapping("/saveCropInfo")
-    public ResponseEntity<String> setCropImgae(@RequestParam MultipartFile file){
-        System.out.println(file);
+    public ResponseEntity<String> setCropImgae(@RequestBody Crop crop){
+        System.out.println(crop);
+        cropService.saveCropinfo(crop);
         //cropImageService.saveCropInformation(cropImage);
         return ResponseEntity.status(HttpStatus.OK)
                 .body("succes");

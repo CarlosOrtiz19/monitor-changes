@@ -1,8 +1,11 @@
 const puppeteer = require('puppeteer');
 const express = require('express');
 const sharp = require('sharp');
-
+const bufferImage = require("buffer-image");
+const dbMysql = require("./Node/MysqlConnection")
 const app = express();
+
+
 
 const port = process.env.PORT || 4000;
 
@@ -12,7 +15,7 @@ app.use((req, res, next) => {
 });
 
 app.get('/screenshot', async (req, res) => {
-    console.log("received")
+    console.log("received methode 1")
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     page.setViewport({ width: 900, height: 500 });
@@ -30,31 +33,30 @@ app.get('/screenshot', async (req, res) => {
     res.end(screenshotBuffer);
 
     await browser.close();
-    next()
 })
 
 app.get('/cropImageSize', async (req, res) => {
-    console.log("received")
+    console.log("received methode 2")
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     page.setViewport({ width: 900, height: 500 });
     await page.goto(req.query.url); // URL is given by the "user" (your client-side application)
-
-    const _top = Number(req.query.top);
-    const _left = Number(req.query.left);
-    const _width = Number(req.query.width);
-    const _height = Number(req.query.height);
-    console.log(req.query.url)
-
-    console.log("top= " + _top + "left= " + _left + "width = " + _width + "_height" + _height)
-
     const screenshotBuffer = await page.screenshot({ fullPage: true });
 
-    var size = 0;
+    const _top = Number.parseInt(req.query.top);
+    const _bottom = Number.parseInt(req.query.left);
+    const _width = Number.parseInt(req.query.width);
+    const _height = Number.parseInt(req.query.height);
+    console.log(req.query.url)
 
+   // console.log("top= " + _top + " _bottom= " + _bottom + " width = " + _width + "_height= " + _height)
 
-    if (screenshotBuffer != null) {
-         await sharp(screenshotBuffer).extract({ width: _width, height: _height, left: _left, top: _top })
+  
+    dbMysql.insertCrop(req.query.url,req.query.width,req.query.height,req.query.left,req.query.top);
+  
+
+   /* if (screenshotBuffer != null) {
+         await sharp(screenshotBuffer).extract({ width: _width, height: _height, left: _bottom, top: _top })
             .toBuffer({ resolveWithObject: true })
             .then(info => {
 
@@ -63,8 +65,8 @@ app.get('/cropImageSize', async (req, res) => {
                 console.log(info)
                 res.status(200).send(JSON.stringify(info.info));
               
-            }).catch(err => console.log(err))
-    }
+            }).catch(err => console.log(err.response))
+    }*/
 
     await browser.close();
 })

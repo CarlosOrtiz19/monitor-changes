@@ -2,21 +2,25 @@ package com.pagewatcher.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
-public class CropImage {
+public class Crop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private byte[] image;
     private String top;
     private String bottom;
     private String width;
     private String height;
+    private String url;
+
+    @OneToOne
+    private ImageCrop imageCrop;
+
+    @ManyToOne
+    @JoinColumn(name="crop_id")
+    private User user;
 }
