@@ -20,7 +20,7 @@ class ImageService {
 
     }
 
-    async saveInfoCrop(crop, url) {
+    async saveInfoCrop(crop, url,email) {
 
 
         //let data = new FormData();
@@ -41,7 +41,8 @@ class ImageService {
             "&top=" + crop.x +
             "&left=" + crop.y +
             "&width=" + crop.width +
-            "&height=" + crop.height)
+            "&height=" + crop.height+
+            "&email="+email)
             .then(res => console.log(res))
             .catch(err => console.log(err.response))
     }

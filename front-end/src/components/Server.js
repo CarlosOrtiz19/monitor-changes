@@ -3,6 +3,7 @@ const express = require('express');
 const sharp = require('sharp');
 const bufferImage = require("buffer-image");
 const dbMysql = require("./Node/MysqlConnection")
+const jobScheduler = require("./Node/JobScheduler")
 const app = express();
 
 
@@ -47,14 +48,14 @@ app.get('/cropImageSize', async (req, res) => {
     const _bottom = Number.parseInt(req.query.left);
     const _width = Number.parseInt(req.query.width);
     const _height = Number.parseInt(req.query.height);
-    console.log(req.query.url)
+    console.log(req.query.email)
 
    // console.log("top= " + _top + " _bottom= " + _bottom + " width = " + _width + "_height= " + _height)
 
   
-    dbMysql.insertCrop(req.query.url,req.query.width,req.query.height,req.query.left,req.query.top);
+    dbMysql.insertCrop(req.query.url,req.query.width,req.query.height,req.query.left,req.query.top,req.query.email);
   
-
+    jobScheduler.createJob();
    /* if (screenshotBuffer != null) {
          await sharp(screenshotBuffer).extract({ width: _width, height: _height, left: _bottom, top: _top })
             .toBuffer({ resolveWithObject: true })

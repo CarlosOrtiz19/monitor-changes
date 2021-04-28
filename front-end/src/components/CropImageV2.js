@@ -110,7 +110,7 @@ export default function CropImageV2(props) {
 
   const saveInformation = async() =>{
 
-    await JsoupService.saveInfoCrop(crop,props.url)
+    await JsoupService.saveInfoCrop(crop,props.url,"carlos@test")
   }
 
 

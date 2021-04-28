@@ -16,6 +16,7 @@ public class Crop {
     private String width;
     private String height;
     private String url;
+    private String email;
 
     @OneToOne
     private ImageCrop imageCrop;
