@@ -11,10 +11,10 @@ public class Crop {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String top;
-    private String bottom;
-    private String width;
-    private String height;
+    private Integer x;
+    private Integer y;
+    private Integer width;
+    private Integer height;
     private String url;
     private String email;
 

@@ -39,8 +39,8 @@ public class ServerExpressConnector {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(urlServer+crop.getUrl()+
-                        "&top="+crop.getTop()+
-                        "&left="+ crop.getBottom()+
+                        "&top="+crop.getX()+
+                        "&left="+ crop.getY()+
                         "&width="+crop.getWidth()+
                         "&height="+crop.getHeight()))
                 .build();
@@ -54,8 +54,8 @@ public class ServerExpressConnector {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(urlServer+crop.getUrl()+
-                        "&top="+crop.getTop()+"&left="+
-                        crop.getBottom()+
+                        "&top="+crop.getX()+"&left="+
+                        crop.getY()+
                         "&width="+crop.getWidth()+
                         "&height="+crop.getHeight()))
                 .build();
@@ -64,7 +64,7 @@ public class ServerExpressConnector {
                 .thenApply(HttpResponse::body);
     }
 
-    public void getScreenShot (String url) throws IOException {
+    public BufferedImage getScreenShot (String url) throws IOException {
         LOGGER.info("getImage from Node");
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -75,15 +75,15 @@ public class ServerExpressConnector {
         InputStream image = client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream())
                 .thenApply(HttpResponse::body).join();
 
-        BufferedImage bf = ImageIO.read(image);
+        return ImageIO.read(image);
 
-        String filePath = "D:\\Desktop\\image3.png";
+        /*String filePath = "D:\\Desktop\\image3.png";
 
         File outputfile = new File(filePath);
         ImageIO.write(bf, "png",new File(filePath));
 
         System.out.println("bf.getHeight() = " + bf.getHeight());
-        System.out.println("bf.getHeight() = " + bf.getWidth());
+        System.out.println("bf.getHeight() = " + bf.getWidth());*/
 
 
     }

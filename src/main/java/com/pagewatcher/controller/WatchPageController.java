@@ -10,6 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/watch")
@@ -31,8 +36,9 @@ public class WatchPageController {
     }
 
     @PostMapping("/saveCropInfo")
-    public ResponseEntity<String> setCropImgae(@RequestBody Crop crop){
-        System.out.println(crop);
+    public ResponseEntity<String> setCropImgae(@RequestBody Crop crop) throws IOException {
+        System.out.println("crop = " + crop);
+
         cropService.saveCropinfo(crop);
         //cropImageService.saveCropInformation(cropImage);
         return ResponseEntity.status(HttpStatus.OK)

@@ -91,6 +91,7 @@ export default function CropImageV2(props) {
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     ctx.imageSmoothingQuality = 'high';
 
+    console.log("completedCrop",completedCrop)
     console.log("width",crop.width)
     console.log("height",crop.height)
     console.log("crop.x",crop.x)
@@ -109,12 +110,9 @@ export default function CropImageV2(props) {
   }, [completedCrop]);
 
   const saveInformation = async() =>{
-
-    await JsoupService.saveInfoCrop(crop,props.url,"carlos@test")
+  
+    await JsoupService.saveInfoCrop(crop, props.url,"carlos@test")
   }
-
-
- 
 
   return (
     <div className="App">

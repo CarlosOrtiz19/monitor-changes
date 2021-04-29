@@ -9,6 +9,7 @@ class ImageService {
     async setState(url, session, cookie, start) {
         return axios.put(BASE_URL + "/screenshot/run?url=" + url + "&session=" + session + "&cookie=" + cookie + "&start=" + start);
     }
+
     async getScreenShot(url) {
         return axios.get(URL_NODE_SERVER + "/screenshot/?url=" + url, {
             responseType: 'arraybuffer'
@@ -20,33 +21,29 @@ class ImageService {
 
     }
 
-    async saveInfoCrop(crop, url,email) {
+    async saveInfoCrop(_crop, _url, _email) {
+        let crop = {
+            x: Number.parseFloat(_crop.x),
+            y: Number.parseFloat(_crop.y),
+            width: Number.parseFloat(_crop.width),
+            height: Number.parseFloat(_crop.height),
+            url: _url,
+            email: _email
+        }
 
+        let config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
 
-        //let data = new FormData();
-        ///data.append('file',crop)
-        /*data.append('name',_image.name)
-        data.append('top',crop.x)
-        data.append('bottom',crop.y)
-        data.append('width',crop.width)
-        data.append('height', crop.height)
-
-        console.log(crop.x)
-        console.log(crop.y)
-        console.log(crop.width)
-        console.log(crop.height)*/
-
-
-        return axios.get(URL_NODE_SERVER + "/cropImageSize/?url=" + url +
-            "&top=" + crop.x +
-            "&left=" + crop.y +
-            "&width=" + crop.width +
-            "&height=" + crop.height+
-            "&email="+email)
+        return axios.post(BASE_URL + "/saveCropInfo/", crop, config)
             .then(res => console.log(res))
             .catch(err => console.log(err.response))
     }
 
+
+        
 }
 
 export default new ImageService()
