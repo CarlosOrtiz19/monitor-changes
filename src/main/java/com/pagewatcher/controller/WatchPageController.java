@@ -39,7 +39,7 @@ public class WatchPageController {
     public ResponseEntity<String> setCropImgae(@RequestBody Crop crop) throws IOException {
         System.out.println("crop = " + crop);
 
-        cropService.saveCropinfo(crop);
+        cropService.saveInitialCrop(crop);
         //cropImageService.saveCropInformation(cropImage);
         return ResponseEntity.status(HttpStatus.OK)
                 .body("succes");
