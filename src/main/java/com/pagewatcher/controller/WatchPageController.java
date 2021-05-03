@@ -1,9 +1,13 @@
 package com.pagewatcher.controller;
 
+import com.pagewatcher.config.QuartzConfig;
 import com.pagewatcher.model.Crop;
+import com.pagewatcher.repository.CropQuartzRepository;
 import com.pagewatcher.service.CropImageService;
 import com.pagewatcher.service.CropService;
 import com.pagewatcher.service.WatchPageService;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +32,11 @@ public class WatchPageController {
     @Autowired
     private CropService cropService;
 
+    @Autowired
+    private QuartzConfig quartzConfig;
+    @Autowired
+    private CropQuartzRepository cropQuartzRepository;
+
     @GetMapping("/run")
     public ResponseEntity<String> getCandidatureById(@RequestParam String url,@RequestParam String session,
                                                      @RequestParam  String cookie) throws Exception {
@@ -40,6 +49,9 @@ public class WatchPageController {
         System.out.println("crop = " + crop);
 
         cropService.saveInitialCrop(crop);
+
+
+
         //cropImageService.saveCropInformation(cropImage);
         return ResponseEntity.status(HttpStatus.OK)
                 .body("succes");

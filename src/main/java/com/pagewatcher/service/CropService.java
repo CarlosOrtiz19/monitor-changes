@@ -1,17 +1,27 @@
 package com.pagewatcher.service;
 
+import com.pagewatcher.config.QuartzConfig;
+import com.pagewatcher.job.CropQuartzJob;
 import com.pagewatcher.model.Crop;
+import com.pagewatcher.model.CropQuartz;
 import com.pagewatcher.model.ImageCrop;
+import com.pagewatcher.repository.CropQuartzRepository;
 import com.pagewatcher.repository.CropRepository;
 import com.pagewatcher.repository.ImageCropRepository;
 import com.pagewatcher.repository.ScreenShotRepository;
 import com.pagewatcher.service.utils.CompareImages;
+import static org.quartz.TriggerBuilder.*;
+import static org.quartz.CronScheduleBuilder.*;
+import static org.quartz.DateBuilder.*;
+
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.Date;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -32,7 +42,12 @@ public class CropService {
     @Autowired
     private ScreenShotRepository screenShotRepository;
 
-    public Crop saveInitialCrop(Crop crop) throws IOException {
+    @Autowired
+    private QuartzConfig quartzConfig;
+    @Autowired
+    private CropQuartzRepository cropQuartzRepository;
+
+    public Crop saveInitialCrop(Crop crop) {
         //ScreenShot screenShot = serverExpressConnector.getAsyncResponseBody(crop).thenApply(ScreenShotMapper::mapperResponse).join();
         BufferedImage screenShot = getScreenShot(crop);
 
@@ -44,7 +59,11 @@ public class CropService {
             ImageCrop imageCrop = new ImageCrop();
             imageCrop.setName("image" + crop.getId());
 
-            ImageIO.write(cropImage, "png", pngContent);
+            try {
+                ImageIO.write(cropImage, "png", pngContent);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             imageCrop.setData(pngContent.toByteArray());
 
             imageCropRepository.save(imageCrop);
@@ -54,10 +73,46 @@ public class CropService {
             //test
             // ImageIO.read((ImageInputStream) screenShot);
             String filePath = "D:\\Desktop\\image15.png";
-            ImageIO.write(cropImage, "png", new File(filePath));
+            try {
+                ImageIO.write(cropImage, "png", new File(filePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             System.out.println("look desktop");
         }
-        return saveCrop(crop);
+
+        cropRepository.save(crop);
+
+        CropQuartz cropQuartz = new CropQuartz();
+        cropQuartz.setCrop(crop);
+
+        cropQuartzRepository.save(cropQuartz);
+        try {
+        // Creating JobDetail instance
+        String id = String.valueOf(cropQuartz.getId());
+        JobDetail jobDetail = JobBuilder.newJob(CropQuartzJob.class).withIdentity(id).build();
+
+        // Adding JobDataMap to jobDetail
+        jobDetail.getJobDataMap().put("cropQuartzId", id);
+
+        // Scheduling time to run job
+       Date triggerJobAt = new Date();
+
+        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(id)
+                .withSchedule(cronSchedule("0 /1 * * * ?"))
+                .build();
+            // Getting scheduler instance
+            Scheduler scheduler = quartzConfig.schedulerFactoryBean().getScheduler();
+            scheduler.scheduleJob(jobDetail, trigger);
+            scheduler.start();
+
+            LOGGER.info("Scheduler start");
+
+        } catch (IOException | SchedulerException e) {
+            e.printStackTrace();
+        }
+
+        return crop;
     }
 
     public Crop saveCrop(Crop crop) {
@@ -107,6 +162,8 @@ public class CropService {
         BufferedImage cropInbd = null;
 
         Optional<Crop> cropOrigin = cropRepository.findById(crop.getId());
+
+        System.out.println("cropOrigin desde compare  = " + cropOrigin.get().getId());
 
         if (cropOrigin.isPresent()) {
 

@@ -17,6 +17,8 @@ public class Crop {
     private Integer height;
     private String url;
     private String email;
+    @OneToOne(mappedBy = "crop" )
+    private CropQuartz cropQuartz;
 
     @OneToOne
     private ImageCrop imageCrop;
