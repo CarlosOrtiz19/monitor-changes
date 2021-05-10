@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -21,9 +22,13 @@ public class Crop {
     private Integer height;
     private String url;
     private String email;
-    private LocalDate createDate = LocalDate.now();
-    @JsonIgnore
-    @OneToOne(mappedBy = "crop")
+    private String title;
+    private LocalDate createDate;
+
+    @OneToMany(mappedBy = "crop")
+    private List<Details> detailsList;
+
+    @OneToOne
     private CropQuartz cropQuartz;
 
     @OneToOne
@@ -32,4 +37,8 @@ public class Crop {
     @ManyToOne
     @JoinColumn(name = "crop_id")
     private User user;
+
+    public Crop (){
+        createDate = LocalDate.now();
+    }
 }
