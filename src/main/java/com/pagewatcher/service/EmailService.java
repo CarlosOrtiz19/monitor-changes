@@ -26,7 +26,7 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(email);
         helper.setSubject("subject");
-        helper.setText("il y a eu un changement",true);
+        helper.setText("il y a eu un changement", true);
         helper.setSentDate(new Date());
         emailSender.send(message);
         LOGGER.info("Mail sent to ==> " + email);
