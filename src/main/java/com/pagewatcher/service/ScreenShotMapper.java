@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ScreenShotMapper extends ObjectMapper {
 
-    public static ScreenShot mapperResponse(String content){
+    public static ScreenShot mapperResponse(String content) {
         System.out.println(content);
         ObjectMapper objectMapper = new ObjectMapper();
         ScreenShot screenShot = null;

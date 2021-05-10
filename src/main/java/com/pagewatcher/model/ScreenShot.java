@@ -16,7 +16,7 @@ public class ScreenShot {
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] data;
-    private String  format;
+    private String format;
     private String width;
     private String height;
     private String channels;

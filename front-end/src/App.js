@@ -1,19 +1,17 @@
-import logo from './logo.svg';
+import {BrowserRouter as Router} from "react-router-dom";
 import './App.css';
-import UrlInput from './components/UrlInput'
-import ShowWebPage from './components/ShowWebPage'
-import NavBarDrawer from './components/NavBarDrawer'
-import TimeSelector from './components/TimeSelector'
+import NavBarDrawer from './components/NavBarDrawer';
+import RouterApp from './components/Router';
 
 function App() {
-  return (
-    <div className="App">
-
-    <NavBarDrawer/>
-    <ShowWebPage/>
-    <TimeSelector/>
-    </div>
-  );
+    return (
+        <div className="App">
+            <Router>
+                <NavBarDrawer/>
+                <RouterApp/>
+            </Router>
+        </div>
+    );
 }
 
 export default App;

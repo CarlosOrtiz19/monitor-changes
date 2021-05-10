@@ -38,38 +38,38 @@ public class ServerExpressConnector {
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(urlServer+crop.getUrl()+
-                        "&top="+crop.getX()+
-                        "&left="+ crop.getY()+
-                        "&width="+crop.getWidth()+
-                        "&height="+crop.getHeight()))
+                .uri(URI.create(urlServer + crop.getUrl() +
+                        "&top=" + crop.getX() +
+                        "&left=" + crop.getY() +
+                        "&width=" + crop.getWidth() +
+                        "&height=" + crop.getHeight()))
                 .build();
-        HttpResponse<String> response =  client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         return Optional.ofNullable(ScreenShotMapper.mapperResponse(response.body())).orElse(new ScreenShot());
     }
 
     public CompletableFuture<String> getAsyncResponseBody(Crop crop) {
-        LOGGER.info("Crop to proces" +crop);
+        LOGGER.info("Crop to proces" + crop);
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(urlServer+crop.getUrl()+
-                        "&top="+crop.getX()+"&left="+
-                        crop.getY()+
-                        "&width="+crop.getWidth()+
-                        "&height="+crop.getHeight()))
+                .uri(URI.create(urlServer + crop.getUrl() +
+                        "&top=" + crop.getX() + "&left=" +
+                        crop.getY() +
+                        "&width=" + crop.getWidth() +
+                        "&height=" + crop.getHeight()))
                 .build();
 
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
     }
 
-    public BufferedImage getScreenShot (String url) throws IOException {
+    public BufferedImage getScreenShot(String url) throws IOException {
         LOGGER.info("getImage from Node");
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .header("content-type", "image/png")
-                .uri(URI.create("http://localhost:4000/screenshot?url="+url))
+                .uri(URI.create("http://localhost:4000/screenshot?url=" + url))
                 .build();
 
         InputStream image = client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream())
@@ -88,7 +88,7 @@ public class ServerExpressConnector {
 
     }
 
-    public void saveImage (BufferedImage bufferedImage) throws IOException {
+    public void saveImage(BufferedImage bufferedImage) throws IOException {
         File outputfile = new File("../desktop/nuevoNombre.png");
         ImageIO.write(bufferedImage, "png", outputfile);
     }

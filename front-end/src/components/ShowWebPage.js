@@ -1,7 +1,7 @@
 import JsoupService from '../Service/JsoupService'
-import React, { useEffect, useState } from "react";
-import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Button, Typography, Grid} from '@material-ui/core';
+import React, {useEffect, useState} from "react";
+import {makeStyles} from '@material-ui/core/styles';
+import {TextField, Button, Typography, Grid} from '@material-ui/core';
 import axios from 'axios';
 import ProgressIndicator from '../Utils/ProgressIndicator';
 import CropImage from './CropImage';
@@ -14,9 +14,10 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     paper: {
-        marginLeft: theme.spacing(5),
-        marginRight: theme.spacing(5),
-        padding: theme.spacing(5),
+        width: "75%",
+        // marginLeft: theme.spacing(5),
+        // marginRight: theme.spacing(5),
+        // padding: theme.spacing(5),
         margin: 'auto',
         variant: 'outlined'
         //talla papel
@@ -40,7 +41,7 @@ export default function ShowWebPage(props) {
         setisLoading(!isLoading)
         console.log("isloading")
         console.log(isLoading)
-        axios.get("http://localhost:4000/screenshot?url=" + url, { responseType: "blob" })
+        axios.get("http://localhost:4000/screenshot?url=" + url, {responseType: "blob"})
             .then(function (response) {
                 var reader = new window.FileReader();
                 reader.readAsDataURL(response.data);
@@ -60,24 +61,24 @@ export default function ShowWebPage(props) {
         <div className="container">
             <Paper className={classes.paper}>
                 <Grid container
-                    direction="column"
-                    justify="center"
-                    alignItems="center">
+                      direction="column"
+                      justify="center"
+                      alignItems="center">
 
 
                     <Grid item xs={12}>
-                        <Typography >
+                        <Typography>
                             1. Insérez l'url que vous souhaitez surveiller
                         </Typography>
                     </Grid>
 
                     <Grid item xs={12} spacing={3}>
-                        <form noValidate autoComplete="off" onSubmit={handleSubmit} >
+                        <form noValidate autoComplete="off" onSubmit={handleSubmit}>
                             <TextField id="outlined-size-normal"
-                                className={classes.textField}
-                                label="Url"
-                                variant="outlined"
-                                onChange={e => setUrl(e.target.value)} />
+                                       className={classes.textField}
+                                       label="Url"
+                                       variant="outlined"
+                                       onChange={e => setUrl(e.target.value)}/>
                             <Button
                                 type="submit"
                                 variant="contained"
@@ -89,22 +90,20 @@ export default function ShowWebPage(props) {
                     </Grid>
 
 
-
-                    <LinearProgress variant="determinate" value={progress} />
-
+                    <LinearProgress variant="determinate" value={progress}/>
 
 
                     {screenShot &&
-                        <>
-                            <Grid item xs={12}>
-                                <Typography >
-                                    2. Sélectionner la zone
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} />
-                                <CropImageV2 src={screenShot} url={url} />
-                            <Grid />
-                        </>
+                    <>
+                        <Grid item xs={12}>
+                            <Typography>
+                                2. Sélectionner la zone
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}/>
+                        <CropImageV2 src={screenShot} url={url}/>
+                        <Grid/>
+                    </>
                     }
 
                 </Grid>
@@ -112,6 +111,6 @@ export default function ShowWebPage(props) {
             </Paper>
 
 
-        </div >
+        </div>
     )
 }

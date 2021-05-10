@@ -1,5 +1,6 @@
 package com.pagewatcher.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ public class ImageCrop {
     @Lob
     private byte[] data;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "imageCrop")
     private Crop crop;
 }

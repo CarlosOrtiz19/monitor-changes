@@ -10,7 +10,7 @@ public class CompareImages {
             return false;
         }
 
-        int width  = imgA.getWidth();
+        int width = imgA.getWidth();
         int height = imgA.getHeight();
 
         // Loop over every pixel.

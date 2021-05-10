@@ -16,9 +16,10 @@ public class CropQuartzJob implements Job {
 
     @Autowired
     private CropQuartzRepository cropQuartzRepository;
-    
+
     @Autowired
     private CropService cropService;
+
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
 
@@ -36,11 +37,11 @@ public class CropQuartzJob implements Job {
 
         log.info("cropQuartz id {}", cropQuartz.get().getId());
 
-            Crop crop = cropQuartz.get().getCrop();
-            
-            boolean isSimilar = cropService.compareCrops(crop);
+        Crop crop = cropQuartz.get().getCrop();
 
-            System.out.println("isSimilar = " + isSimilar);
+        boolean isSimilar = cropService.compareCrops(crop);
+
+        System.out.println("isSimilar = " + isSimilar);
 
 
        /* try {
@@ -53,7 +54,6 @@ public class CropQuartzJob implements Job {
         } catch (SchedulerException e) {
             e.printStackTrace();
         }*/
-
 
 
     }

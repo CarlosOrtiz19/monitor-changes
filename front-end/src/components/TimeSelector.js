@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState, useCallback, useRef, useEffect} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const minute = [10,20,30,40,50];
-const hours = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+const minute = [10, 20, 30, 40, 50];
+const hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
 
 
 export default function TimeSelector() {
@@ -30,7 +30,7 @@ export default function TimeSelector() {
     const handleChange = (event) => {
         settimeTest(event.target.value);
         console.log(timeTest)
-      };
+    };
 
     return (
         <div>
@@ -42,12 +42,12 @@ export default function TimeSelector() {
                     value={timeTest}
                     onChange={handleChange}
                 >
-                    {minutes.map(min => 
+                    {minutes.map(min =>
                         <MenuItem key={min.toString()}> {min}</MenuItem>
                     )
 
                     }
-                    
+
                 </Select>
             </FormControl>
 
@@ -57,15 +57,15 @@ export default function TimeSelector() {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     value={timeTest}
-                    placeholder= "0"
+                    placeholder="0"
                     onChange={handleChange}
                 >
-                    {minutes.map(min => 
+                    {minutes.map(min =>
                         <MenuItem key={min.toString()}> {min}</MenuItem>
                     )
 
                     }
-                    
+
                 </Select>
             </FormControl>
 
@@ -77,12 +77,12 @@ export default function TimeSelector() {
                     value={timeTest}
                     onChange={handleChange}
                 >
-                    {minutes.map(min => 
+                    {minutes.map(min =>
                         <MenuItem key={min.toString()}> {min}</MenuItem>
                     )
 
                     }
-                    
+
                 </Select>
             </FormControl>
 

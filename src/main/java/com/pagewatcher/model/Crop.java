@@ -1,8 +1,12 @@
 package com.pagewatcher.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Data
@@ -17,13 +21,15 @@ public class Crop {
     private Integer height;
     private String url;
     private String email;
-    @OneToOne(mappedBy = "crop" )
+    private LocalDate createDate = LocalDate.now();
+    @JsonIgnore
+    @OneToOne(mappedBy = "crop")
     private CropQuartz cropQuartz;
 
     @OneToOne
     private ImageCrop imageCrop;
 
     @ManyToOne
-    @JoinColumn(name="crop_id")
+    @JoinColumn(name = "crop_id")
     private User user;
 }

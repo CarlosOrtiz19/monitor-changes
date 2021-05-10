@@ -7,5 +7,5 @@ const config = {
     table: 'crop'
 };
 
-  
-  module.exports = config;
+
+module.exports = config;

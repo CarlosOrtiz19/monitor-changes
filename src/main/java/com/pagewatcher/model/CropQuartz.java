@@ -1,5 +1,6 @@
 package com.pagewatcher.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,8 +18,9 @@ public class CropQuartz {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @OneToOne
-    private  Crop crop;
+    private Crop crop;
     @CreatedDate
     private LocalDateTime created;
 

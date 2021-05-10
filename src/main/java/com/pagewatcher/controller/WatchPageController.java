@@ -1,6 +1,7 @@
 package com.pagewatcher.controller;
 
 import com.pagewatcher.config.QuartzConfig;
+import com.pagewatcher.dto.CropDto;
 import com.pagewatcher.model.Crop;
 import com.pagewatcher.repository.CropQuartzRepository;
 import com.pagewatcher.service.CropImageService;
@@ -18,6 +19,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -38,10 +40,10 @@ public class WatchPageController {
     private CropQuartzRepository cropQuartzRepository;
 
     @GetMapping("/run")
-    public ResponseEntity<String> getCandidatureById(@RequestParam String url,@RequestParam String session,
-                                                     @RequestParam  String cookie) throws Exception {
-            String response = watchPageService.runScript(url,session,cookie);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+    public ResponseEntity<String> getCandidatureById(@RequestParam String url, @RequestParam String session,
+                                                     @RequestParam String cookie) throws Exception {
+        String response = watchPageService.runScript(url, session, cookie);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/saveCropInfo")
@@ -51,10 +53,15 @@ public class WatchPageController {
         cropService.saveInitialCrop(crop);
 
 
-
         //cropImageService.saveCropInformation(cropImage);
         return ResponseEntity.status(HttpStatus.OK)
                 .body("succes");
+    }
+
+    @GetMapping("search/{email}")
+    public List<CropDto> getMonitorByEmail(@PathVariable String email) {
+        //CropDto cropDto= cropService.getCropByEmail(email);
+        return cropService.getCropByEmail(email);
     }
 
 

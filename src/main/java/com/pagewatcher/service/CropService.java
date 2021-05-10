@@ -1,7 +1,9 @@
 package com.pagewatcher.service;
 
 import com.pagewatcher.config.QuartzConfig;
+import com.pagewatcher.dto.CropDto;
 import com.pagewatcher.job.CropQuartzJob;
+import com.pagewatcher.mapper.CropMapper;
 import com.pagewatcher.model.Crop;
 import com.pagewatcher.model.CropQuartz;
 import com.pagewatcher.model.ImageCrop;
@@ -10,9 +12,8 @@ import com.pagewatcher.repository.CropRepository;
 import com.pagewatcher.repository.ImageCropRepository;
 import com.pagewatcher.repository.ScreenShotRepository;
 import com.pagewatcher.service.utils.CompareImages;
-import static org.quartz.TriggerBuilder.*;
+
 import static org.quartz.CronScheduleBuilder.*;
-import static org.quartz.DateBuilder.*;
 
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -46,6 +48,9 @@ public class CropService {
     private QuartzConfig quartzConfig;
     @Autowired
     private CropQuartzRepository cropQuartzRepository;
+
+    @Autowired
+    private CropMapper cropMapper;
 
     public Crop saveInitialCrop(Crop crop) {
         //ScreenShot screenShot = serverExpressConnector.getAsyncResponseBody(crop).thenApply(ScreenShotMapper::mapperResponse).join();
@@ -88,19 +93,19 @@ public class CropService {
 
         cropQuartzRepository.save(cropQuartz);
         try {
-        // Creating JobDetail instance
-        String id = String.valueOf(cropQuartz.getId());
-        JobDetail jobDetail = JobBuilder.newJob(CropQuartzJob.class).withIdentity(id).build();
+            // Creating JobDetail instance
+            String id = String.valueOf(cropQuartz.getId());
+            JobDetail jobDetail = JobBuilder.newJob(CropQuartzJob.class).withIdentity(id).build();
 
-        // Adding JobDataMap to jobDetail
-        jobDetail.getJobDataMap().put("cropQuartzId", id);
+            // Adding JobDataMap to jobDetail
+            jobDetail.getJobDataMap().put("cropQuartzId", id);
 
-        // Scheduling time to run job
-       Date triggerJobAt = new Date();
+            // Scheduling time to run job
+            Date triggerJobAt = new Date();
 
-        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(id)
-                .withSchedule(cronSchedule("0 /1 * * * ?"))
-                .build();
+            Trigger trigger = TriggerBuilder.newTrigger().withIdentity(id)
+                    .withSchedule(cronSchedule("0 /1 * * * ?"))
+                    .build();
             // Getting scheduler instance
             Scheduler scheduler = quartzConfig.schedulerFactoryBean().getScheduler();
             scheduler.scheduleJob(jobDetail, trigger);
@@ -173,9 +178,16 @@ public class CropService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            areEquals = CompareImages.compare(cropImage,cropInbd);
+            areEquals = CompareImages.compare(cropImage, cropInbd);
         }
         return areEquals;
+    }
+
+    public List<CropDto> getCropByEmail(String email) {
+
+        LOGGER.info("get all crops by email");
+        List<Crop> crop = cropRepository.findByEmail(email);
+        return cropMapper.toDtoList(crop);
     }
 
 }

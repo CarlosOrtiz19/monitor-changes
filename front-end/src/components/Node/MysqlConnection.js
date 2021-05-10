@@ -10,7 +10,7 @@ const config = {
 };
 
 
-exports.insertCrop = async (url, width, height, left, top,email) => {
+exports.insertCrop = async (url, width, height, left, top, email) => {
     mysqlx.getSession(config)
         .then(session => {
             return session.sql(`create database if not exists ${config.schema}`)
@@ -22,15 +22,15 @@ exports.insertCrop = async (url, width, height, left, top,email) => {
                 .then(() => {
                     const table = session.getSchema(config.schema).getTable(config.table);
 
-                    return table.insert('url', 'width', 'height', 'bottom', 'top','email')
-                        .values(url, width, height, left, top,email)
+                    return table.insert('url', 'width', 'height', 'bottom', 'top', 'email')
+                        .values(url, width, height, left, top, email)
                         .execute()
                         .then(() => {
-                            return table.select('top', 'bottom', 'width', 'height', 'url','email')
+                            return table.select('top', 'bottom', 'width', 'height', 'url', 'email')
                                 .execute()
                         })
                         .then(res => {
-                            console.log("insert succes",res.fetchAll()); // ['foo', 42]
+                            console.log("insert succes", res.fetchAll()); // ['foo', 42]
                         })
                 }).then(() => {
                     return session.close();
@@ -51,11 +51,11 @@ exports.getCropByEmail = async (_email) => {
                     const table = session.getSchema(config.schema).getTable(config.table);
 
 
-                    return table.select('email','url', 'width', 'height', 'bottom', 'top')
-                        .where('email = :'+ _email)
+                    return table.select('email', 'url', 'width', 'height', 'bottom', 'top')
+                        .where('email = :' + _email)
                         .execute()
                         .then(res => {
-                            console.log("insert succes",res.fetchAll()); 
+                            console.log("insert succes", res.fetchAll());
                         })
                 }).then(() => {
                     return session.close();

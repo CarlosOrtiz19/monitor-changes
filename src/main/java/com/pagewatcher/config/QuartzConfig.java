@@ -2,6 +2,7 @@ package com.pagewatcher.config;
 
 import java.io.IOException;
 import java.util.Properties;
+
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;

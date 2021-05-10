@@ -21,6 +21,18 @@ class ImageService {
 
     }
 
+
+    async getAllMonitorsByEmail(email) {
+        let config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        return axios.get(BASE_URL + "/search/" + email, config)
+
+    }
+
     async saveInfoCrop(_crop, _url, _email) {
         let crop = {
             x: Number.parseFloat(_crop.x),
@@ -43,7 +55,6 @@ class ImageService {
     }
 
 
-        
 }
 
 export default new ImageService()
