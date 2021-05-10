@@ -1,8 +1,5 @@
 package com.pagewatcher;
 
-import com.pagewatcher.service.WatchPageService;
-import com.pagewatcher.service.WatchPageBinance;
-import com.pagewatcher.service.WatchPageServiceTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -14,14 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 public class PagewatcherApplication {
 
-    @Autowired
-    WatchPageService watchPageService;
 
-    @Autowired
-    WatchPageBinance watchPageBinance;
-
-    @Autowired
-    WatchPageServiceTest watchPageServicetest;
 
     public static void main(String[] args) {
         SpringApplication.run(PagewatcherApplication.class, args);

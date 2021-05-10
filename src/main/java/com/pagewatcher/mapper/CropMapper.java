@@ -2,6 +2,8 @@ package com.pagewatcher.mapper;
 
 import com.pagewatcher.dto.CropDto;
 import com.pagewatcher.model.Crop;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 
 import java.util.ArrayList;
