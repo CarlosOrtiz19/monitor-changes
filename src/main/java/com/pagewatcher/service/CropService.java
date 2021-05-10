@@ -88,7 +88,7 @@ public class CropService {
 
         cropRepository.save(crop);
 
-        CropQuartz cropQuartz = new CropQuartz();
+        /*CropQuartz cropQuartz = new CropQuartz();
         cropQuartz.setCrop(crop);
 
         cropQuartzRepository.save(cropQuartz);
@@ -115,9 +115,13 @@ public class CropService {
 
         } catch (IOException | SchedulerException e) {
             e.printStackTrace();
-        }
+        }*/
 
         return crop;
+    }
+
+    public void deleteCrop(Long cropId){
+        cropRepository.deleteById(cropId);
     }
 
     public Crop saveCrop(Crop crop) {

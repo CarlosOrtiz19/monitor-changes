@@ -1,7 +1,7 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ReactCrop from 'react-image-crop';
-import {TextField, Button, Typography, Grid} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { TextField, Button, Typography, Grid } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import JsoupService from '../Service/JsoupService';
 
@@ -53,7 +53,7 @@ export default function CropImageV2(props) {
     const [upImg] = props.src;
     const imgRef = useRef(null);
     const previewCanvasRef = useRef(null);
-    const [crop, setCrop] = useState({unit: '%', width: 30, aspect: 16 / 9});
+    const [crop, setCrop] = useState({ unit: '%', width: 30, aspect: 16 / 9 });
     const [completedCrop, setCompletedCrop] = useState(null);
 
     const [email, setEmail] = useState("")
@@ -113,22 +113,14 @@ export default function CropImageV2(props) {
 
         <div className="App">
 
-            <div styles={{height: '150px', overflowY: 'scroll'}}>
-                <ReactCrop
-                    src={props.src}
-                    onImageLoaded={onLoad}
-                    crop={crop}
-                    onChange={(c) => setCrop(c)}
-                    onComplete={(c) => setCompletedCrop(c)}
-                />
-                <div style={{height: 300, overflow: scroll}}>
-                    <canvas ref={previewCanvasRef} style={{
-                        //width: 300,
-                        height: 300
-                    }}/>
-                </div>
+            <ReactCrop
+                src={props.src}
+                onImageLoaded={onLoad}
+                crop={crop}
+                onChange={(c) => setCrop(c)}
+                onComplete={(c) => setCompletedCrop(c)}
+            />
 
-            </div>
             <div>
                 <canvas
                     ref={previewCanvasRef}
@@ -167,18 +159,18 @@ export default function CropImageV2(props) {
             </Grid>
 
             <TextField id="outlined-size-normal"
-                       className={classes.textField}
-                       label="Email"
-                       placeholder="insert the email to notify"
-                       variant="outlined"
-                       onChange={e => setEmail(e.target.value)}/>
+                className={classes.textField}
+                label="Email"
+                placeholder="insert the email to notify"
+                variant="outlined"
+                onChange={e => setEmail(e.target.value)} />
 
             <TextField id="outlined-size-normal"
-                       className={classes.textField}
-                       label="Email"
-                       placeholder="insert the email to notify"
-                       variant="outlined"
-                       onChange={e => setEmail(e.target.value)}/>
+                className={classes.textField}
+                label="Email"
+                placeholder="insert the email to notify"
+                variant="outlined"
+                onChange={e => setEmail(e.target.value)} />
 
 
         </div>

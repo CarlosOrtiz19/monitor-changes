@@ -2,13 +2,16 @@ package com.pagewatcher.job;
 
 import com.pagewatcher.model.Crop;
 import com.pagewatcher.model.CropQuartz;
+import com.pagewatcher.model.Details;
 import com.pagewatcher.repository.CropQuartzRepository;
+import com.pagewatcher.repository.DetailsRepository;
 import com.pagewatcher.service.CropService;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 public class CropQuartzJob implements Job {
@@ -19,6 +22,9 @@ public class CropQuartzJob implements Job {
 
     @Autowired
     private CropService cropService;
+
+    @Autowired
+    private DetailsRepository detailsRepository;
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -40,6 +46,13 @@ public class CropQuartzJob implements Job {
         Crop crop = cropQuartz.get().getCrop();
 
         boolean isSimilar = cropService.compareCrops(crop);
+
+        Details details = new Details();
+        details.setLastMonitoring(LocalDate.now());
+        details.setStateLastMonitoring(isSimilar);
+
+        details.setCrop(crop);
+        detailsRepository.save(details);
 
         System.out.println("isSimilar = " + isSimilar);
 
