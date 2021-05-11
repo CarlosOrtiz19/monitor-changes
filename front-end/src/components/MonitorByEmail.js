@@ -28,6 +28,10 @@ export default function MonitorByEmail() {
     const [email, setemail] = useState("")
     const [monitors, setmonitors] = useState([])
 
+    const deleteMonitor =() =>{
+        findMonitorsBYemail();
+    }
+
 
     const findMonitorsBYemail = async () => {
         const response = await JsoupService.getAllMonitorsByEmail("carlos@test");
@@ -58,7 +62,7 @@ export default function MonitorByEmail() {
 
                     {monitors.length && monitors.map(data =>
                         <Grid item key={data.id}>
-                            <CardTemplate monitor={data}/>
+                            <CardTemplate monitor={data} deleteMonitor={deleteMonitor}/>
                         </Grid>
                     )}
 

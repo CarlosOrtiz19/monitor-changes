@@ -16,6 +16,9 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import DeleteCrop from '../Utils/DeleteCrop';
+import JsoupService from '../Service/JsoupService';
+
 
 
 
@@ -60,9 +63,23 @@ export default function ImageCard(props) {
     const [image, setimage] = useState(null)
     const [showImage, setshowImage] = useState(false)
     const [showDetails, setshowDetails] = useState(false)
+    const [deleteCrop, setdeleteCrop] = useState(false)
     const [color, setcolor] = useState(null)
     const [avatarLetter, setavatarLetter] = useState("")
 
+    const deleteCard = (id) => {
+        setdeleteCrop(true)
+    }
+    const confirmDelete = async ()=>{
+        console.log("confirmed")
+        await JsoupService.deleteCropByCropId(props.monitor.id).then(e => console.log(e))
+        props.deleteMonitor()
+    }
+
+    const modifyCard = (e) => {
+        console.log(e)
+
+    }
 
     const generateColor = () => {
         let color = randomColor();
@@ -71,12 +88,9 @@ export default function ImageCard(props) {
 
     const sliceAvatarLetter = () => {
         const text = props.monitor.imageCrop.name;
-
         if (text) {
             setavatarLetter(text.slice(0, 1))
         }
-
-
     }
     useEffect(() => {
         sliceAvatarLetter()
@@ -85,7 +99,7 @@ export default function ImageCard(props) {
             setcolor(null);
             setavatarLetter("")
         }
-    }, [])
+    }, [props.monitor])
     const showImageFuction = (e) => {
         console.log(showImage)
         setshowImage(true)
@@ -99,26 +113,11 @@ export default function ImageCard(props) {
     const handleClose = () => {
         setshowDetails(false)
         setshowImage(false)
+        setdeleteCrop(false)
     };
     return (
         <>
             <Card className={classes.root} variant="outlined">
-                {/* <CardHeader
-                avatar={
-                    <Avatar aria-label="recipe" style={{backgroundColor: color}} >
-                        {avatarLetter}
-                    </Avatar>
-                }
-                action={
-                    <IconButton aria-label="settings">
-                       <MoreVertIcon/>
-                    </IconButton>
-                }
-                title={props.monitor.imageCrop.name}
-                subheader={props.monitor.createDate}
-
-            /> */}
-
                 <CardActionArea>
                     <Paper className={classes.paper}>
                         <CardMedia
@@ -143,7 +142,7 @@ export default function ImageCard(props) {
                         <div className="row justify-content-start">
 
                             <div className="col-2 p-0">
-                                <Tooltip title="Modifier">
+                                <Tooltip title="Modifier" onClick={() => modifyCard(props.monitor.id)}>
                                     <IconButton aria-label="add to favorites">
                                         <EditIcon />
                                     </IconButton>
@@ -151,7 +150,7 @@ export default function ImageCard(props) {
                             </div>
                             <div className="col-2  p-0">
                                 <Tooltip title="Effacer">
-                                    <IconButton aria-label="share">
+                                    <IconButton aria-label="share" onClick={() => deleteCard(props.monitor.id)}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -169,15 +168,16 @@ export default function ImageCard(props) {
                         </div>
                     </div>
 
-
-
-
                     {showImage &&
                         <ShowImage src={`data:image/jpeg;base64,${props.monitor.imageCrop.data}`} handleClose={handleClose} />
                     }
 
                     {showDetails &&
                         <ShowDetails crop={props.monitor} handleClose={handleClose} />
+                    }
+
+                    {deleteCrop &&
+                        <DeleteCrop handleClose={handleClose} confirmDelete={confirmDelete} />
                     }
 
                 </CardActions>
@@ -247,4 +247,8 @@ export default function ImageCard(props) {
         //     </CardContent>
         // </Card>
     );
+}
+
+const DeleteCurrentCardById = (id) => {
+    return <DeleteCrop id={id} />;
 }

@@ -28,16 +28,16 @@ public class Crop {
     private LocalDate createDate;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "crop")
+    @OneToMany(mappedBy = "crop",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Details> detailsList;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private CropQuartz cropQuartz;
 
-    @OneToOne
+    @OneToOne( cascade = CascadeType.ALL)
     private ImageCrop imageCrop;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crop_id")
     private User user;
 

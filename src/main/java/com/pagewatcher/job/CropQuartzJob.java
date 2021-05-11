@@ -45,35 +45,42 @@ public class CropQuartzJob implements Job {
         long id = Long.parseLong(cropQuartzId);
         Optional<CropQuartz> cropQuartz = cropQuartzRepository.findById(id);
 
-        log.info("cropQuartz id {}", cropQuartz.get().getId());
+        if(cropQuartz.isPresent()){
+            log.info("cropQuartz id {}", cropQuartz.get().getId());
 
-        Crop crop = cropQuartz.get().getCrop();
+            Crop crop = cropQuartz.get().getCrop();
 
-        boolean isSimilar = cropService.compareCrops(crop);
+            boolean isSimilar = cropService.compareCrops(crop);
 
-        Details details = new Details();
-
-
-
-        details.setLastMonitoring(getCurrentDate());
-        details.setStateLastMonitoring(isSimilar);
-
-        details.setCrop(crop);
-        detailsRepository.save(details);
-
-        System.out.println("isSimilar = " + isSimilar);
+            Details details = new Details();
 
 
-       /* try {
-            context.getScheduler().deleteJob(new JobKey(cropQuartzId));
 
-            TriggerKey triggerKey = new TriggerKey(cropQuartzId);
+            details.setLastMonitoring(getCurrentDate());
+            details.setStateLastMonitoring(isSimilar);
 
-            context.getScheduler().unscheduleJob(triggerKey);
+            details.setCrop(crop);
+            detailsRepository.save(details);
 
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-        }*/
+            System.out.println("isSimilar = " + isSimilar);
+
+        } else{
+            try {
+                context.getScheduler().deleteJob(new JobKey(cropQuartzId));
+
+                TriggerKey triggerKey = new TriggerKey(cropQuartzId);
+
+                context.getScheduler().unscheduleJob(triggerKey);
+
+            } catch (SchedulerException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+
+
 
 
     }
