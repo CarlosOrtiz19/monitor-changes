@@ -2,6 +2,7 @@ import {BrowserRouter as Router} from "react-router-dom";
 import './App.css';
 import NavBarDrawer from './components/NavBarDrawer';
 import RouterApp from './components/Router';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
     return (
