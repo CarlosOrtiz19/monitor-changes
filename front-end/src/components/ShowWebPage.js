@@ -80,7 +80,6 @@ export default function ShowWebPage(props) {
                                        variant="outlined"
                                        onChange={e => setUrl(e.target.value)}/>
                             <Button
-                            className='align-middle'
                                 type="submit"
                                 variant="contained"
                                 color="primary"

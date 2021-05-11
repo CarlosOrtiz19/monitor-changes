@@ -21,6 +21,17 @@ class ImageService {
 
     }
 
+    async getAllDetailsByCropId(id) {
+        let config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        return axios.get(BASE_URL + "/getDetails/" + id, config)
+    }
+
+
+
 
     async getAllMonitorsByEmail(email) {
         let config = {

@@ -12,6 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.util.Optional;
 
 public class CropQuartzJob implements Job {
@@ -48,7 +52,10 @@ public class CropQuartzJob implements Job {
         boolean isSimilar = cropService.compareCrops(crop);
 
         Details details = new Details();
-        details.setLastMonitoring(LocalDate.now());
+
+
+
+        details.setLastMonitoring(getCurrentDate());
         details.setStateLastMonitoring(isSimilar);
 
         details.setCrop(crop);
@@ -69,5 +76,22 @@ public class CropQuartzJob implements Job {
         }*/
 
 
+    }
+
+    private String getCurrentDate() {
+        LocalDateTime now = LocalDateTime.now();
+        /*int year = now.getYear();
+        int month = now.getMonthValue();
+        int day = now.getDayOfMonth();
+        int hour = now.getHour();
+        int minute = now.getMinute();
+        int second = now.getSecond();
+
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append(year).append("-").append(month).append("-").append(day).append(" ")
+                .append(hour).append(":").append(minute).append(":").append(second);
+
+        return strBuilder.toString();*/
+        return now.atZone(ZoneId.of("GMT")).format(DateTimeFormatter.RFC_1123_DATE_TIME);
     }
 }

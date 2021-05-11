@@ -26,9 +26,12 @@ public class DetailsService {
 
     public List<Details> detailsByCropId(Long id){
         Optional<Crop> crop = cropRepository.findById(id);
-        if(crop.isEmpty()){
-            return Collections.emptyList();
+        if(crop.isPresent()){
+            System.out.println("crop.get() = " + crop.get());
+
+            return detailsRepository.findByCrop(crop.get());
+
         }
-        return detailsRepository.findByCrop(crop.get());
+       return Collections.emptyList();
     }
 }

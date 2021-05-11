@@ -31,13 +31,9 @@ export default function MonitorByEmail() {
 
     const findMonitorsBYemail = async () => {
         const response = await JsoupService.getAllMonitorsByEmail("carlos@test");
-
-        setmonitors(response.data)
-
-        //setmonitors(response.data);
-
-        console.log(response)
-
+        if(response){
+            setmonitors(response.data)
+        }
     }
 
 
@@ -61,7 +57,7 @@ export default function MonitorByEmail() {
                 <Grid container>
 
                     {monitors.length && monitors.map(data =>
-                        <Grid item>
+                        <Grid item key={data.id}>
                             <CardTemplate monitor={data}/>
                         </Grid>
                     )}

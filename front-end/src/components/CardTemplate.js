@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
+import { Button, CardActionArea, Paper } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
-import { IconButton, Divider, CardActionArea, Button, Paper, Link, Box } from '@material-ui/core';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { blue, red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import React, { useState } from "react";
+import ShowDetails from "../Utils/ShowDetails";
 import ShowImage from "../Utils/ShowImage";
 
 const useStyles = makeStyles((theme) => ({
@@ -47,21 +39,21 @@ export default function ImageCard(props) {
     const classes = useStyles();
     const [image, setimage] = useState(null)
     const [showImage, setshowImage] = useState(false)
+    const [showDetails, setshowDetails] = useState(false)
 
-
-    const bufferToSrc = () => {
-
-    }
 
     const showImageFuction = (e) => {
         console.log(showImage)
         setshowImage(true)
     }
 
-    console.log(props.monitor.email)
+    const showDetailsFunction = (e) => {
+        console.log(showDetails)
+        setshowDetails(true)
+    }
 
     const handleClose = () => {
-
+        setshowDetails(false)
         setshowImage(false)
     };
     return (
@@ -98,10 +90,12 @@ export default function ImageCard(props) {
                 href="#text-buttons" 
                 style={{ textTransform: 'none' }}
                 color="primary" 
-                onClick={() => {
-                    console.info("I'm a button.");
-                }}>Plus de détails
+                onClick={showDetailsFunction}>Plus de détails
                 </Button>
+
+                {showDetails &&
+                    <ShowDetails crop={props.monitor} handleClose={handleClose} />
+                }
 
 
 
