@@ -1,9 +1,11 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ReactCrop from 'react-image-crop';
-import { TextField, Button, Typography, Grid } from '@material-ui/core';
+import { TextField, Button, Typography, Grid, InputAdornment } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import JsoupService from '../Service/JsoupService';
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import useSetTime from "../Utils/useSetTime"
 
 
 function generateDownload(canvas, crop) {
@@ -43,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: '100ch',
+        width: '90ch',
     },
 }));
 
@@ -55,17 +57,10 @@ export default function CropImageV2(props) {
     const previewCanvasRef = useRef(null);
     const [crop, setCrop] = useState({ unit: '%', width: 30, aspect: 16 / 9 });
     const [completedCrop, setCompletedCrop] = useState(null);
+    const [timeToCheck, settimeToCheck] = useState("0 /1 * * *")
+    const { times } = useSetTime()
 
-    const [email, setEmail] = useState("")
-
-
-    /*const onSelectFile = (e) => {
-      if (e.target.files && e.target.files.length > 0) {
-        const reader = new FileReader();
-        reader.addEventListener('load', () => setUpImg(reader.result));
-        reader.readAsDataURL(e.target.files[0]);
-      }
-    };*/
+    const [email, setEmail] = useState(" ")
 
     const onLoad = useCallback((img) => {
         imgRef.current = img;
@@ -106,12 +101,22 @@ export default function CropImageV2(props) {
 
     const saveInformation = async () => {
 
-        await JsoupService.saveInfoCrop(crop, props.url, "carlos@test")
+       // await JsoupService.saveInfoCrop(crop, props.url, "carlos@test")
+    }
+
+    const handleChange = (event) => {
+        settimeToCheck(event.target.value);
+    };
+
+    const handleSubmit = (event) => {
+        console.log(event.target.reset)
+         event.preventDefault();
+         
     }
 
     return (
 
-        <div className="App">
+        <div className="container">
 
             <ReactCrop
                 src={props.src}
@@ -121,7 +126,7 @@ export default function CropImageV2(props) {
                 onComplete={(c) => setCompletedCrop(c)}
             />
 
-            <div>
+            {/* <div>
                 <canvas
                     ref={previewCanvasRef}
                     // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
@@ -130,19 +135,11 @@ export default function CropImageV2(props) {
                         height: 300
                     }}
                 />
-            </div>
+            </div> */}
 
-            <Button
-                type="button"
-                disabled={!completedCrop?.width || !completedCrop?.height}
-                onClick={() =>
-                    saveInformation()
-                }
-            >
-                save crop
-            </Button>
 
-            <Button
+
+            {/* <Button
                 type="button"
                 disabled={!completedCrop?.width || !completedCrop?.height}
                 onClick={() =>
@@ -150,27 +147,91 @@ export default function CropImageV2(props) {
                 }
             >
                 Download cropped image
-            </Button>
+            </Button> */}
+            <form onSubmit={handleSubmit} className="p-3">
+                <div className="row justify-content-between" >
+                    <div className="col-8">
+                        <Typography>
+                            1. Insérez l'url que vous souhaitez surveiller
+                        </Typography>
+                    </div>
+                    <div className="col-2">
+                        <Typography>
+                            vérifier chaque
+                        </Typography>
+                    </div>
 
-            <Grid item xs={12}>
-                <Typography>
-                    1. Insérez l'url que vous souhaitez surveiller
-                </Typography>
-            </Grid>
+                </div>
+                <div className="row justify-content-between" >
+                    <div className="col-10">
+                        <TextField
+                            type="email"
+                            required={true}
+                            value={email}
+                            variant="outlined"
+                            className={classes.textField}
+                            error={email === ""}
+                            placeholder="exemple@email.com"
+                            onChange={e => setEmail(e.target.value)}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <MailOutlineIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        >
+                        </TextField>
 
-            <TextField id="outlined-size-normal"
-                className={classes.textField}
-                label="Email"
-                placeholder="insert the email to notify"
-                variant="outlined"
-                onChange={e => setEmail(e.target.value)} />
+                    </div>
+                    <div className="col-2">
+                        <TextField
+                            select
+                            value={timeToCheck}
+                            onChange={handleChange}
+                            SelectProps={{
+                                native: true,
+                            }}
+                            variant="outlined"
+                        >
+                            {times.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </TextField>
+                    </div>
+                </div>
 
-            <TextField id="outlined-size-normal"
-                className={classes.textField}
-                label="Email"
-                placeholder="insert the email to notify"
-                variant="outlined"
-                onChange={e => setEmail(e.target.value)} />
+                <div className="row">
+                    <Button
+                        style={{ textTransform: 'none' }}
+                        className='align-middle m-2'
+                        type="submit"
+                        disabled={email === "" || email ===" "}
+                        variant="contained"
+                        color="primary"
+                        disabled={!completedCrop?.width || !completedCrop?.height}
+                        onClick={() =>
+                            saveInformation()
+                        }
+                    >
+                        save crop
+                    </Button>
+
+
+                </div>
+
+
+
+            </form>
+
+
+
+
+
+
+
 
 
         </div>
