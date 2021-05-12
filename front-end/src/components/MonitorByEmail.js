@@ -1,22 +1,20 @@
-import React, {useEffect, useState} from "react";
-import {TextField, makeStyles, Paper, Button, Typography, Grid} from '@material-ui/core';
-import CardTemplate from './CardTemplate'
+import { Grid, IconButton, makeStyles, Paper, TextField, Tooltip } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import React, { useEffect, useState } from "react";
 import JsoupService from "../Service/JsoupService";
+import CardTemplate from './CardTemplate';
 
 const useStyles = makeStyles((theme) => ({
     root: {},
     paper: {
         marginTop: '0px',
         width: "75%",
-        //marginLeft: theme.spacing(10),
-        //marginRight: theme.spacing(5),
         padding: theme.spacing(2),
         margin: 'auto',
         variant: 'outlined'
-        //talla papel
     },
     textField: {
-        padding: theme.spacing(5),
+        padding: theme.spacing(3),
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
         width: '100ch',
@@ -25,54 +23,70 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MonitorByEmail() {
     const classes = useStyles();
-    const [email, setemail] = useState("")
+    const [email, setemail] = useState(" ")
     const [monitors, setmonitors] = useState([])
+    const [validationError, setvalidationError] = useState("initialState")
 
-
-    const findMonitorsBYemail = async () => {
-        const response = await JsoupService.getAllMonitorsByEmail("carlos@test");
-
-        setmonitors(response.data)
-
-        //setmonitors(response.data);
-
-        console.log(response)
-
+    const deleteMonitor = () => {
+        findMonitorsBYemail();
     }
 
-
-    useEffect(() => {
-        findMonitorsBYemail()
-        return () => {
-            setmonitors([])
+    const findMonitorsBYemail = async () => {
+        const response = await JsoupService.getAllMonitorsByEmail(email);
+        if (response) {
+            setmonitors(response.data)
         }
-    }, [])
+    }
+
+    // useEffect(() => {
+    //     if()
+    //     findMonitorsBYemail()
+    //     return () => {
+    //         setmonitors([])
+    //     }
+    // }, [])
+
+    const handleSubmit = (event) => {
+        findMonitorsBYemail(email)
+        console.log(email)
+        event.preventDefault();
+    }
+
+    const handleEmailChange = (event) => {
+        setemail(event.target.value)
+    }
     return (
-        <Grid justify="center">
+        <Grid container justify="center">
             <Paper className={classes.paper}>
-                <TextField id="outlined-size-normal"
-                           className={classes.textField}
-                           label="Email"
-                           placeholder="insert the email to notify"
-                           variant="outlined"
-                    // onChange={e => setEmail(e.target.value)}
-                />
+
+                <form onSubmit={handleSubmit} >
+                    <TextField 
+                        variant="filled"
+                        className={classes.textField}
+                        error={email === ""}
+                        value={email}
+                        placeholder="exemple@mail.com"
+                        onChange={handleEmailChange}
+                        InputProps={{
+                            startAdornment: (
+                                <Tooltip title="Chercher">
+                                    <IconButton type="submit" value="Submit">
+                                        <SearchIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            ),
+                        }}
+                    >
+                    </TextField>
+                </form>
 
                 <Grid container>
-
-                    {monitors.length && monitors.map(data =>
-                        <Grid item>
-                            <CardTemplate monitor={data}/>
+                    {monitors && monitors.map(data =>
+                        <Grid item key={data.id}>
+                            <CardTemplate monitor={data} deleteMonitor={deleteMonitor} />
                         </Grid>
                     )}
-
                 </Grid>
-                <div className="container">
-                    <div className="row">
-
-
-                    </div>
-                </div>
             </Paper>
         </Grid>
     )

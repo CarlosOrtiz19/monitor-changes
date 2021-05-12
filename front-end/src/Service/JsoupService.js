@@ -21,6 +21,27 @@ class ImageService {
 
     }
 
+    async getAllDetailsByCropId(id) {
+        let config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        return axios.get(BASE_URL + "/getDetails/" + id, config)
+    }
+
+    async deleteCropByCropId(id) {
+        let config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        return axios.delete(BASE_URL + "/delete/" + id, config)
+    }
+
+
+
+
 
     async getAllMonitorsByEmail(email) {
         let config = {

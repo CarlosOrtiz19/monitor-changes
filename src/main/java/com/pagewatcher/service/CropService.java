@@ -86,12 +86,13 @@ public class CropService {
             System.out.println("look desktop");
         }
 
+        CropQuartz cropQuartz = new CropQuartz();
+        cropQuartzRepository.save(cropQuartz);
+        crop.setCropQuartz(cropQuartz);
+
         cropRepository.save(crop);
 
-        CropQuartz cropQuartz = new CropQuartz();
-        cropQuartz.setCrop(crop);
 
-        cropQuartzRepository.save(cropQuartz);
         try {
             // Creating JobDetail instance
             String id = String.valueOf(cropQuartz.getId());
@@ -118,6 +119,10 @@ public class CropService {
         }
 
         return crop;
+    }
+
+    public void deleteCrop(Long cropId){
+        cropRepository.deleteById(cropId);
     }
 
     public Crop saveCrop(Crop crop) {

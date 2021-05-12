@@ -18,8 +18,8 @@ public class CropQuartz {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @OneToOne
+    @JsonIgnore
+    @OneToOne(mappedBy = "cropQuartz")
     private Crop crop;
     @CreatedDate
     private LocalDateTime created;
