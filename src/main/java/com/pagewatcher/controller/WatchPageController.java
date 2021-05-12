@@ -1,6 +1,7 @@
 package com.pagewatcher.controller;
 
 import com.pagewatcher.config.QuartzConfig;
+import com.pagewatcher.config.proxi.PageWatcherProxy;
 import com.pagewatcher.dto.CropDto;
 import com.pagewatcher.model.Crop;
 import com.pagewatcher.model.Details;
@@ -26,30 +27,15 @@ public class WatchPageController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(WatchPageController.class);
 
-
-    @Autowired
-    private CropImageService cropImageService;
-
     @Autowired
     private CropService cropService;
 
     @Autowired
     private DetailsService detailsService;
 
-    @Autowired
-    private QuartzConfig quartzConfig;
-    @Autowired
-    private CropQuartzRepository cropQuartzRepository;
-
- 
     @PostMapping("/saveCropInfo")
     public ResponseEntity<String> setCropImgae(@RequestBody Crop crop) throws IOException {
-        System.out.println("crop = " + crop);
-
         cropService.saveInitialCrop(crop);
-
-
-        //cropImageService.saveCropInformation(cropImage);
         return ResponseEntity.status(HttpStatus.OK)
                 .body("succes");
     }

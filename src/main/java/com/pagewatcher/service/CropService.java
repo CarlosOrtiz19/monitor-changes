@@ -16,6 +16,8 @@ import com.pagewatcher.service.utils.CompareImages;
 import static org.quartz.CronScheduleBuilder.*;
 
 import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +27,12 @@ import java.io.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
+
 
 @Service
 public class CropService {
 
-    private final Logger LOGGER = Logger.getLogger(ServerExpressConnector.class.getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(CropService.class);
 
     @Autowired
     private ImageCropRepository imageCropRepository;
@@ -55,7 +57,7 @@ public class CropService {
     public Crop saveInitialCrop(Crop crop) {
         //ScreenShot screenShot = serverExpressConnector.getAsyncResponseBody(crop).thenApply(ScreenShotMapper::mapperResponse).join();
         BufferedImage screenShot = getScreenShot(crop);
-
+        LOGGER.info("get initial screenShot {} ",screenShot.getWidth());
         BufferedImage cropImage = getCropImage(screenShot, crop);
 
         if (cropImage != null) {
@@ -143,6 +145,11 @@ public class CropService {
     }
 
     private BufferedImage getCropImage(BufferedImage bufferedImage, Crop crop) {
+
+        if(bufferedImage == null  ){
+            LOGGER.info("image || crop null ");
+            return null;
+        }
         LOGGER.info("create crop image ");
         return bufferedImage.getSubimage(
                 validLimit(crop.getX(), bufferedImage.getHeight()),

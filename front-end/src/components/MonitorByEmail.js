@@ -38,13 +38,13 @@ export default function MonitorByEmail() {
         }
     }
 
-    // useEffect(() => {
-    //     if()
-    //     findMonitorsBYemail()
-    //     return () => {
-    //         setmonitors([])
-    //     }
-    // }, [])
+    //  useEffect(() => {
+      
+    //      findMonitorsBYemail()
+    //      return () => {
+    //          setmonitors([])
+    //      }
+    //  }, [])
 
     const handleSubmit = (event) => {
         findMonitorsBYemail(email)

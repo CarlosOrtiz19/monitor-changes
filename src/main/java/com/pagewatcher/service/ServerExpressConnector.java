@@ -1,16 +1,21 @@
 package com.pagewatcher.service;
 
 
+import com.pagewatcher.config.proxi.PageWatcherProxy;
 import com.pagewatcher.model.Crop;
 import com.pagewatcher.model.ScreenShot;
 
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -33,8 +38,9 @@ public class ServerExpressConnector {
     @Value("${com.pagewatcher.screenshot}")
     private String urlScreenShot;
 
+
+
     public ScreenShot mapper(Crop crop) throws IOException, InterruptedException {
-        System.out.println(crop);
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -76,20 +82,10 @@ public class ServerExpressConnector {
                 .thenApply(HttpResponse::body).join();
 
         return ImageIO.read(image);
-
-        /*String filePath = "D:\\Desktop\\image3.png";
-
-        File outputfile = new File(filePath);
-        ImageIO.write(bf, "png",new File(filePath));
-
-        System.out.println("bf.getHeight() = " + bf.getHeight());
-        System.out.println("bf.getHeight() = " + bf.getWidth());*/
-
-
     }
 
     public void saveImage(BufferedImage bufferedImage) throws IOException {
-        File outputfile = new File("../desktop/nuevoNombre.png");
+        File outputfile = new File( "D:\\Desktop\\imagefaing.png");
         ImageIO.write(bufferedImage, "png", outputfile);
     }
 

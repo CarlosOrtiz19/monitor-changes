@@ -73,5 +73,5 @@ app.get('/cropImageSize', async (req, res) => {
 
 
 app.listen(port, () => {
-    console.log("server Started")
+    console.log(`server Started on ${port}`)
 });

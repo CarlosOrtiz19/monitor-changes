@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ShowWebPage(props) {
     const classes = useStyles();
     const [screenShot, setscreenShot] = useState(null)
-    const [url, setUrl] = useState(" ")
+    const [url, setUrl] = useState("")
     const [isLoading, setisLoading] = useState(true)
     const [progress, setProgress] = React.useState(0);
 
