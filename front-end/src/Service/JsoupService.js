@@ -1,4 +1,5 @@
 import axios from 'axios';
+import swal from 'sweetalert';
 
 
 const BASE_URL = "http://localhost:8080/watch";
@@ -39,10 +40,6 @@ class ImageService {
         return axios.delete(BASE_URL + "/delete/" + id, config)
     }
 
-
-
-
-
     async getAllMonitorsByEmail(email) {
         let config = {
             headers: {
@@ -71,8 +68,6 @@ class ImageService {
         }
 
         return axios.post(BASE_URL + "/saveCropInfo/", crop, config)
-            .then(res => console.log(res))
-            .catch(err => console.log(err.response))
     }
 
 

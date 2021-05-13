@@ -18,6 +18,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import DeleteCrop from '../Utils/DeleteCrop';
 import JsoupService from '../Service/JsoupService';
+import swal from 'sweetalert';
 
 
 
@@ -67,13 +68,42 @@ export default function ImageCard(props) {
     const [color, setcolor] = useState(null)
     const [avatarLetter, setavatarLetter] = useState("")
 
-    const deleteCard = (id) => {
-        setdeleteCrop(true)
+    const deleteCard = () => {
+
+        swal({
+            title: "Are you sure?",
+            text: "You want to delete this user?",
+            icon: "warning",
+            buttons: ["Non", "Oui"],
+            dangerMode: true,
+        }).then(willDelete => {
+            if (willDelete) {
+               
+                JsoupService.deleteCropByCropId(props.monitor.id).then(res => {
+                    swal({
+                        title: "Done!",
+                        text: "user is deleted",
+                        icon: "success",
+                        timer: 2000,
+                        button: false
+                    })
+                    if(res){
+                        props.deleteMonitor()
+                    }
+                })
+
+                
+               
+            }
+            
+        })
+       
+        //setdeleteCrop(true)
     }
-    const confirmDelete = async ()=>{
+    const confirmDelete = async () => {
         console.log("confirmed")
-        await JsoupService.deleteCropByCropId(props.monitor.id).then(e => console.log(e))
-        props.deleteMonitor()
+
+
     }
 
     const modifyCard = (e) => {
@@ -176,9 +206,9 @@ export default function ImageCard(props) {
                         <ShowDetails crop={props.monitor} handleClose={handleClose} />
                     }
 
-                    {deleteCrop &&
+                    {/* {deleteCrop &&
                         <DeleteCrop handleClose={handleClose} confirmDelete={confirmDelete} />
-                    }
+                    } */}
 
                 </CardActions>
 

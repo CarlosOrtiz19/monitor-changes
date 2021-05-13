@@ -6,6 +6,8 @@ import axios from 'axios';
 import JsoupService from '../Service/JsoupService';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import useSetTime from "../Utils/useSetTime"
+import swal from 'sweetalert';
+import Progress from '../Utils/Progress';
 
 
 function generateDownload(canvas, crop) {
@@ -58,6 +60,7 @@ export default function CropImageV2(props) {
     const [crop, setCrop] = useState({ unit: '%', width: 30, aspect: 16 / 9 });
     const [completedCrop, setCompletedCrop] = useState(null);
     const [timeToCheck, settimeToCheck] = useState("0 /1 * * *")
+    const [isLoading, setisLoading] = useState(false)
     const { times } = useSetTime()
 
     const [email, setEmail] = useState(" ")
@@ -100,8 +103,21 @@ export default function CropImageV2(props) {
     }, [completedCrop]);
 
     const saveInformation = async () => {
-
-        await JsoupService.saveInfoCrop(crop, props.url,email)
+        await JsoupService.saveInfoCrop(crop, props.url, email).then(res => {
+            if (res) {
+                setisLoading(false)
+                swal({
+                    title: "Done!",
+                    text: "Nous vous tiendrons informé",
+                    icon: "success",
+                    timer: 3000,
+                    button: false
+                })
+            }
+            props.restart();
+            reset();
+        })
+            .catch(err => console.log(err.response))
     }
 
     const handleChange = (event) => {
@@ -109,9 +125,14 @@ export default function CropImageV2(props) {
     };
 
     const handleSubmit = (event) => {
-        console.log(event.target.reset)
-         event.preventDefault();
-         
+        setisLoading(true)
+        saveInformation()
+        event.preventDefault();
+    }
+
+    const reset = () => {
+        setCrop(null)
+        setCompletedCrop(null);
     }
 
     return (
@@ -203,18 +224,20 @@ export default function CropImageV2(props) {
                     </div>
                 </div>
 
+                {isLoading &&
+                    <Progress />
+                }
+
                 <div className="row">
                     <Button
                         style={{ textTransform: 'none' }}
                         className='align-middle m-2'
                         type="submit"
-                        disabled={email === "" || email ===" "}
+                        disabled={email === "" || email === " "}
                         variant="contained"
                         color="primary"
                         disabled={!completedCrop?.width || !completedCrop?.height}
-                        onClick={() =>
-                            saveInformation()
-                        }
+
                     >
                         save crop
                     </Button>

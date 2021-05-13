@@ -11,6 +11,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import SearchIcon from '@material-ui/icons/Search';
 import HttpIcon from '@material-ui/icons/Http';
 import Logo from "../images/imgTemp.jpg"
+import Progress from '../Utils/Progress';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,18 +38,17 @@ export default function ShowWebPage(props) {
     const classes = useStyles();
     const [screenShot, setscreenShot] = useState(null)
     const [url, setUrl] = useState("")
-    const [isLoading, setisLoading] = useState(true)
+    const [isLoading, setisLoading] = useState(false)
     const [progress, setProgress] = React.useState(0);
 
     const takeScreenShot = (_url) => {
-        setisLoading(!isLoading)
-        console.log("isloading")
-        console.log(isLoading)
+        setisLoading(true)
         axios.get("http://localhost:4000/screenshot?url=" + url, { responseType: "blob" })
             .then(function (response) {
                 var reader = new window.FileReader();
                 reader.readAsDataURL(response.data);
                 reader.onload = function () {
+                    setisLoading(false)
                     var imageDataUrl = reader.result;
                     setscreenShot(imageDataUrl)
                 }
@@ -61,7 +61,8 @@ export default function ShowWebPage(props) {
         evt.target.reset()
     }
 
-    const restartUrl = () => {
+    const restart = () => {
+        console.log("reset of cropimage")
         setUrl("")
         setscreenShot(null)
     }
@@ -113,11 +114,17 @@ export default function ShowWebPage(props) {
                                 type="submit"
                                 variant="contained"
                                 color="primary"
-                                onClick={restartUrl}>
+                                onClick={restart}>
                                 Reprendre
                             </Button>
                         }
                     </form>
+
+                    {!screenShot && isLoading &&
+                        <div className="p-2">
+                            <Progress/>
+                        </div>
+                    }
 
 
                     {!screenShot &&
@@ -125,8 +132,6 @@ export default function ShowWebPage(props) {
                             <img src={Logo} alt="image temporaire" style={{ height: 'auto', width: '100%' }} />
                         </div>
                     }
-
-                    <LinearProgress variant="determinate" value={progress} />
 
                     {screenShot &&
                         <>
@@ -136,7 +141,7 @@ export default function ShowWebPage(props) {
                             </Typography>
                             </Grid>
                             <Grid item xs={12} />
-                            <CropImageV2 src={screenShot} url={url} />
+                            <CropImageV2 src={screenShot} url={url} restart={restart}/>
                             <Grid />
                         </>
                     }

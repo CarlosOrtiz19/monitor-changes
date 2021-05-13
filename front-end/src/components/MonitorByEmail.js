@@ -28,18 +28,20 @@ export default function MonitorByEmail() {
     const [validationError, setvalidationError] = useState("initialState")
 
     const deleteMonitor = () => {
+        console.log("deletemonitor")
         findMonitorsBYemail();
     }
 
     const findMonitorsBYemail = async () => {
         const response = await JsoupService.getAllMonitorsByEmail(email);
+        console.log(response)
         if (response) {
             setmonitors(response.data)
         }
     }
 
     //  useEffect(() => {
-      
+
     //      findMonitorsBYemail()
     //      return () => {
     //          setmonitors([])
@@ -56,38 +58,46 @@ export default function MonitorByEmail() {
         setemail(event.target.value)
     }
     return (
-        <Grid container justify="center">
-            <Paper className={classes.paper}>
+        <Grid container>
 
-                <form onSubmit={handleSubmit} >
-                    <TextField 
-                        variant="filled"
-                        className={classes.textField}
-                        error={email === ""}
-                        value={email}
-                        placeholder="exemple@mail.com"
-                        onChange={handleEmailChange}
-                        InputProps={{
-                            startAdornment: (
-                                <Tooltip title="Chercher">
-                                    <IconButton type="submit" value="Submit">
-                                        <SearchIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            ),
-                        }}
-                    >
-                    </TextField>
-                </form>
+            <div>
+                busyuemos por email
+             </div>
 
-                <Grid container>
-                    {monitors && monitors.map(data =>
-                        <Grid item key={data.id}>
-                            <CardTemplate monitor={data} deleteMonitor={deleteMonitor} />
-                        </Grid>
-                    )}
-                </Grid>
-            </Paper>
+
+            <Grid container justify="center" >
+                <Paper className={classes.paper}>
+
+                    <form onSubmit={handleSubmit} >
+                        <TextField
+                            variant="filled"
+                            className={classes.textField}
+                            error={email === ""}
+                            value={email}
+                            placeholder="exemple@mail.com"
+                            onChange={handleEmailChange}
+                            InputProps={{
+                                startAdornment: (
+                                    <Tooltip title="Chercher">
+                                        <IconButton type="submit" value="Submit">
+                                            <SearchIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                ),
+                            }}
+                        >
+                        </TextField>
+                    </form>
+
+                    <Grid container>
+                        {monitors && monitors.map(data =>
+                            <Grid item key={data.id}>
+                                <CardTemplate monitor={data} deleteMonitor={deleteMonitor} />
+                            </Grid>
+                        )}
+                    </Grid>
+                </Paper>
+            </Grid>
         </Grid>
     )
 }
