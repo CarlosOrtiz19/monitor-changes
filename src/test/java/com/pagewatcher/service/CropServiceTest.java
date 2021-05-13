@@ -15,8 +15,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class CropServiceTest {
@@ -39,11 +37,10 @@ class CropServiceTest {
 
     }
 
-
     @Test
     public void saveCrop() {
         when(cropRepository.save(any())).thenReturn(crop);
-        Crop response = cropService.saveCrop(crop);
+        Crop response = cropService.setCropImage(crop);
         Assertions.assertEquals(crop, crop);
     }
 

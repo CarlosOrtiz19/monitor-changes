@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Setter
 @Entity
 public class ScreenShot {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

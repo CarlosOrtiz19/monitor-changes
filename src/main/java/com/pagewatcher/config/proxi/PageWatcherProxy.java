@@ -13,9 +13,9 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
 
-//@FeignClient(name="node-server",url="localhost:4000",configuration = FeignSimpleEncoderConfig.class)
+@FeignClient(name="node-server")
 public interface PageWatcherProxy {
 
-   /* @GetMapping("/screenshot")
-    ResponseEntity<byte[]> getScreenShot(@RequestParam String url);*/
+    @GetMapping("/screenshot")
+    ResponseEntity<byte[]> getScreenShot(@RequestParam String url);
 }

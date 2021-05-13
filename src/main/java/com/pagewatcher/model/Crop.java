@@ -3,11 +3,9 @@ package com.pagewatcher.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -32,7 +30,7 @@ public class Crop {
     private List<Details> detailsList;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private CropQuartz cropQuartz;
+    private MonitoringJob monitoringJob;
 
     @OneToOne( cascade = CascadeType.ALL)
     private ImageCrop imageCrop;

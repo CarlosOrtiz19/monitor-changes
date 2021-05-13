@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,13 +12,13 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class CropQuartz {
+public class MonitoringJob {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @JsonIgnore
-    @OneToOne(mappedBy = "cropQuartz")
+    @OneToOne(mappedBy = "monitoringJob")
     private Crop crop;
     @CreatedDate
     private LocalDateTime created;

@@ -5,12 +5,11 @@ import com.pagewatcher.dto.CropDto;
 import com.pagewatcher.job.CropQuartzJob;
 import com.pagewatcher.mapper.CropMapper;
 import com.pagewatcher.model.Crop;
-import com.pagewatcher.model.CropQuartz;
+import com.pagewatcher.model.MonitoringJob;
 import com.pagewatcher.model.ImageCrop;
 import com.pagewatcher.repository.CropQuartzRepository;
 import com.pagewatcher.repository.CropRepository;
 import com.pagewatcher.repository.ImageCropRepository;
-import com.pagewatcher.repository.ScreenShotRepository;
 import com.pagewatcher.service.utils.CompareImages;
 
 import static org.quartz.CronScheduleBuilder.*;
@@ -44,9 +43,6 @@ public class CropService {
     private ServerExpressConnector serverExpressConnector;
 
     @Autowired
-    private ScreenShotRepository screenShotRepository;
-
-    @Autowired
     private QuartzConfig quartzConfig;
     @Autowired
     private CropQuartzRepository cropQuartzRepository;
@@ -55,16 +51,37 @@ public class CropService {
     private CropMapper cropMapper;
 
     public Crop saveInitialCrop(Crop crop) {
-        //ScreenShot screenShot = serverExpressConnector.getAsyncResponseBody(crop).thenApply(ScreenShotMapper::mapperResponse).join();
-        BufferedImage screenShot = getScreenShot(crop);
-        LOGGER.info("get initial screenShot {} ",screenShot.getWidth());
-        BufferedImage cropImage = getCropImage(screenShot, crop);
 
+        BufferedImage cropImage = getCropImage(crop);
+
+        setCropImage(crop, cropImage);
+
+        configureMonitoringJob(crop);
+
+        return crop;
+    }
+
+    public List<CropDto> getCropByEmail(String email) {
+
+        LOGGER.info("get all crops by email");
+        List<Crop> crop = cropRepository.findByEmail(email);
+        return cropMapper.toDtoList(crop);
+    }
+
+    public void deleteCrop(Long cropId){
+        cropRepository.deleteById(cropId);
+    }
+
+    public Crop setCropImage(Crop crop) {
+        return cropRepository.save(crop);
+    }
+
+    private void setCropImage(Crop crop, BufferedImage cropImage) {
         if (cropImage != null) {
             ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
 
             ImageCrop imageCrop = new ImageCrop();
-            imageCrop.setName("image" + crop.getId());
+            imageCrop.setName("image_" + crop.getId());
 
             try {
                 ImageIO.write(cropImage, "png", pngContent);
@@ -85,19 +102,80 @@ public class CropService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("look desktop");
         }
+    }
 
-        CropQuartz cropQuartz = new CropQuartz();
-        cropQuartzRepository.save(cropQuartz);
-        crop.setCropQuartz(cropQuartz);
 
+    private BufferedImage getScreenShot(Crop crop) {
+        BufferedImage screenShot = null;
+        try {
+            screenShot = serverExpressConnector.getScreenShot(crop.getUrl());
+            LOGGER.info("screenshot taken");
+        } catch (IOException e) {
+            LOGGER.info("problem getting the screenshot");
+            e.printStackTrace();
+        }
+        return screenShot;
+    }
+
+    private BufferedImage getCropImage(Crop crop) {
+        BufferedImage screenShot = getScreenShot(crop);
+
+        if(screenShot == null || crop == null  ){
+            LOGGER.info("image or crop  = null ");
+            return null;
+        }
+        LOGGER.info("create crop image ");
+        return screenShot.getSubimage(
+                validLimit(crop.getX(), screenShot.getHeight()),
+                validLimit(crop.getY(), screenShot.getWidth()),
+                validLimit(crop.getWidth(), screenShot.getWidth()),
+                validLimit(crop.getHeight(), screenShot.getHeight()));
+    }
+
+    private int validLimit(int axe, int limit) {
+        int value = axe;
+        if (axe < 0) {
+            value = 0;
+        }
+        if (axe > limit) {
+            value = limit;
+        }
+        return value;
+    }
+
+    public boolean compareCrops(Crop crop) {
+        boolean areEquals = false;
+        //actual crop
+        BufferedImage cropImage = getCropImage(crop);
+        //crop in bd
+        BufferedImage cropInbd = null;
+
+        Optional<Crop> cropOrigin = cropRepository.findById(crop.getId());
+
+        if (cropOrigin.isPresent()) {
+
+            InputStream imageInBd = new ByteArrayInputStream(cropOrigin.get().getImageCrop().getData());
+            try {
+                cropInbd = ImageIO.read(imageInBd);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            areEquals = CompareImages.compare(cropImage, cropInbd);
+        }
+        return areEquals;
+    }
+
+
+    private void configureMonitoringJob(Crop crop) {
+        MonitoringJob monitoringJob = new MonitoringJob();
+        cropQuartzRepository.save(monitoringJob);
+        crop.setMonitoringJob(monitoringJob);
         cropRepository.save(crop);
-
 
         try {
             // Creating JobDetail instance
-            String id = String.valueOf(cropQuartz.getId());
+            String id = String.valueOf(monitoringJob.getId());
             JobDetail jobDetail = JobBuilder.newJob(CropQuartzJob.class).withIdentity(id).build();
 
             // Adding JobDataMap to jobDetail
@@ -119,87 +197,5 @@ public class CropService {
         } catch (IOException | SchedulerException e) {
             e.printStackTrace();
         }
-
-        return crop;
     }
-
-    public void deleteCrop(Long cropId){
-        cropRepository.deleteById(cropId);
-    }
-
-    public Crop saveCrop(Crop crop) {
-        return cropRepository.save(crop);
-    }
-
-
-    private BufferedImage getScreenShot(Crop crop) {
-        BufferedImage screenShot = null;
-        try {
-            screenShot = serverExpressConnector.getScreenShot(crop.getUrl());
-            LOGGER.info("screenshot taken");
-        } catch (IOException e) {
-            LOGGER.info("problem getting the screenshot");
-            e.printStackTrace();
-        }
-        return screenShot;
-    }
-
-    private BufferedImage getCropImage(BufferedImage bufferedImage, Crop crop) {
-
-        if(bufferedImage == null  ){
-            LOGGER.info("image || crop null ");
-            return null;
-        }
-        LOGGER.info("create crop image ");
-        return bufferedImage.getSubimage(
-                validLimit(crop.getX(), bufferedImage.getHeight()),
-                validLimit(crop.getY(), bufferedImage.getWidth()),
-                validLimit(crop.getWidth(), bufferedImage.getWidth()),
-                validLimit(crop.getHeight(), bufferedImage.getHeight()));
-    }
-
-    private int validLimit(int axe, int limit) {
-        int value = axe;
-        if (axe < 0) {
-            value = 0;
-        }
-        if (axe > limit) {
-            value = limit;
-        }
-        return value;
-    }
-
-    public boolean compareCrops(Crop crop) {
-        boolean areEquals = false;
-        //from server Node
-        BufferedImage screenShot = getScreenShot(crop);
-        //actual crop
-        BufferedImage cropImage = getCropImage(screenShot, crop);
-        //crop in bd
-        BufferedImage cropInbd = null;
-
-        Optional<Crop> cropOrigin = cropRepository.findById(crop.getId());
-
-        System.out.println("cropOrigin desde compare  = " + cropOrigin.get().getId());
-
-        if (cropOrigin.isPresent()) {
-
-            InputStream imageInBd = new ByteArrayInputStream(cropOrigin.get().getImageCrop().getData());
-            try {
-                cropInbd = ImageIO.read(imageInBd);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            areEquals = CompareImages.compare(cropImage, cropInbd);
-        }
-        return areEquals;
-    }
-
-    public List<CropDto> getCropByEmail(String email) {
-
-        LOGGER.info("get all crops by email");
-        List<Crop> crop = cropRepository.findByEmail(email);
-        return cropMapper.toDtoList(crop);
-    }
-
 }
