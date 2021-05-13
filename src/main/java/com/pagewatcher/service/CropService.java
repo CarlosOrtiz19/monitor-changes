@@ -5,15 +5,12 @@ import com.pagewatcher.dto.CropDto;
 import com.pagewatcher.job.CropQuartzJob;
 import com.pagewatcher.mapper.CropMapper;
 import com.pagewatcher.model.Crop;
-import com.pagewatcher.model.MonitoringJob;
 import com.pagewatcher.model.ImageCrop;
+import com.pagewatcher.model.MonitoringJob;
 import com.pagewatcher.repository.CropQuartzRepository;
 import com.pagewatcher.repository.CropRepository;
 import com.pagewatcher.repository.ImageCropRepository;
 import com.pagewatcher.service.utils.CompareImages;
-
-import static org.quartz.CronScheduleBuilder.*;
-
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +23,7 @@ import java.io.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
+import static org.quartz.CronScheduleBuilder.cronSchedule;
 
 @Service
 public class CropService {
@@ -68,7 +65,7 @@ public class CropService {
         return cropMapper.toDtoList(crop);
     }
 
-    public void deleteCrop(Long cropId){
+    public void deleteCrop(Long cropId) {
         cropRepository.deleteById(cropId);
     }
 
@@ -105,11 +102,11 @@ public class CropService {
         }
     }
 
-
     private BufferedImage getScreenShot(Crop crop) {
         BufferedImage screenShot = null;
         try {
-            screenShot = serverExpressConnector.getScreenShot(crop.getUrl());
+            //screenShot = serverExpressConnector.getScreenShot(crop.getUrl());
+            screenShot = serverExpressConnector.getScreenShotFeing(crop.getUrl());
             LOGGER.info("screenshot taken");
         } catch (IOException e) {
             LOGGER.info("problem getting the screenshot");
@@ -121,7 +118,7 @@ public class CropService {
     private BufferedImage getCropImage(Crop crop) {
         BufferedImage screenShot = getScreenShot(crop);
 
-        if(screenShot == null || crop == null  ){
+        if (screenShot == null || crop == null) {
             LOGGER.info("image or crop  = null ");
             return null;
         }

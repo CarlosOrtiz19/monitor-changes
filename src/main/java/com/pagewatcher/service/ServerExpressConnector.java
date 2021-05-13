@@ -38,6 +38,9 @@ public class ServerExpressConnector {
     @Value("${com.pagewatcher.screenshot}")
     private String urlScreenShot;
 
+    @Autowired
+    private PageWatcherProxy pageWatcherProxy;
+
 
 
     public ScreenShot mapper(Crop crop) throws IOException, InterruptedException {
@@ -89,11 +92,16 @@ public class ServerExpressConnector {
         ImageIO.write(bufferedImage, "png", outputfile);
     }
 
-    public static void main(String[] args) throws IOException {
-        ServerExpressConnector server = new ServerExpressConnector();
+    public BufferedImage getScreenShotFeing(String url) throws IOException {
 
-        server.getScreenShot("https://www.google.com/search?q=buffer+to+image+java&rlz=1C1CHBF_frCO885CO885&oq=&aqs=chrome.0.69i59i450l8.504520j0j7&sourceid=chrome&ie=UTF-8");
+        ResponseEntity<byte[]> response = pageWatcherProxy.getScreenShot(url);
 
+
+
+        InputStream im = new ByteArrayInputStream(response.getBody());
+
+        LOGGER.info("screenShot in feing");
+
+        return ImageIO.read(im);
     }
-
 }

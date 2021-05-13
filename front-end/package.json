@@ -15,6 +15,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^5.0.0",
     "buffer-image": "^1.0.0",
+    "eureka-js-client": "^4.5.0",
     "html2canvas": "^1.0.0-rc.7",
     "mysql": "^2.18.1",
     "node-schedule": "^2.0.0",

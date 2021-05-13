@@ -1,15 +1,10 @@
 package com.pagewatcher.controller;
 
-import com.pagewatcher.config.QuartzConfig;
-import com.pagewatcher.config.proxi.PageWatcherProxy;
 import com.pagewatcher.dto.CropDto;
 import com.pagewatcher.model.Crop;
 import com.pagewatcher.model.Details;
-import com.pagewatcher.repository.CropQuartzRepository;
-import com.pagewatcher.service.CropImageService;
 import com.pagewatcher.service.CropService;
 import com.pagewatcher.service.DetailsService;
-import com.pagewatcher.service.ServerExpressConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
