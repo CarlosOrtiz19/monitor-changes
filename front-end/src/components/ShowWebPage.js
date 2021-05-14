@@ -12,6 +12,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import HttpIcon from '@material-ui/icons/Http';
 import Logo from "../images/imgTemp.jpg"
 import Progress from '../Utils/Progress';
+import { TouchBallLoading } from 'react-loadingg';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,7 +40,6 @@ export default function ShowWebPage(props) {
     const [screenShot, setscreenShot] = useState(null)
     const [url, setUrl] = useState("")
     const [isLoading, setisLoading] = useState(false)
-    const [progress, setProgress] = React.useState(0);
 
     const takeScreenShot = (_url) => {
         setisLoading(true)
@@ -62,7 +62,6 @@ export default function ShowWebPage(props) {
     }
 
     const restart = () => {
-        console.log("reset of cropimage")
         setUrl("")
         setscreenShot(null)
     }
@@ -122,7 +121,7 @@ export default function ShowWebPage(props) {
 
                     {!screenShot && isLoading &&
                         <div className="p-2">
-                            <Progress/>
+                            <TouchBallLoading size="large" color="#207DE0 " />
                         </div>
                     }
 
@@ -141,7 +140,10 @@ export default function ShowWebPage(props) {
                             </Typography>
                             </Grid>
                             <Grid item xs={12} />
-                            <CropImageV2 src={screenShot} url={url} restart={restart}/>
+                            <CropImageV2 src={screenShot}
+                                url={url}
+                                restart={restart}
+                                />
                             <Grid />
                         </>
                     }

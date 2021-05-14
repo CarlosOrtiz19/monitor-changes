@@ -8,6 +8,8 @@ import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import useSetTime from "../Utils/useSetTime"
 import swal from 'sweetalert';
 import Progress from '../Utils/Progress';
+import { TouchBallLoading } from 'react-loadingg';
+import { BoxLoading } from 'react-loadingg';
 
 
 function generateDownload(canvas, crop) {
@@ -225,7 +227,9 @@ export default function CropImageV2(props) {
                 </div>
 
                 {isLoading &&
-                    <Progress />
+                <div className="p-2">
+                    <Progress/>
+                </div>
                 }
 
                 <div className="row">
