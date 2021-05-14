@@ -50,5 +50,4 @@ public class WatchPageController {
         cropService.deleteCrop(cropId);
     }
 
-
 }

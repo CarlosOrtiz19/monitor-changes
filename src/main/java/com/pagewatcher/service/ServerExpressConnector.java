@@ -1,25 +1,19 @@
 package com.pagewatcher.service;
 
-
 import com.pagewatcher.config.proxi.PageWatcherProxy;
 import com.pagewatcher.model.Crop;
 import com.pagewatcher.model.ScreenShot;
-
-
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
-import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -35,12 +29,8 @@ public class ServerExpressConnector {
     @Value("${com.pagewatcher.puppeteer}")
     private String urlServer;
 
-    @Value("${com.pagewatcher.screenshot}")
-    private String urlScreenShot;
-
     @Autowired
     private PageWatcherProxy pageWatcherProxy;
-
 
 
     public ScreenShot mapper(Crop crop) throws IOException, InterruptedException {
@@ -59,7 +49,6 @@ public class ServerExpressConnector {
     }
 
     public CompletableFuture<String> getAsyncResponseBody(Crop crop) {
-        LOGGER.info("Crop to proces" + crop);
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(urlServer + crop.getUrl() +
@@ -74,11 +63,11 @@ public class ServerExpressConnector {
     }
 
     public BufferedImage getScreenShot(String url) throws IOException {
-        LOGGER.info("getImage from Node");
+        LOGGER.info("get Image from Node-server");
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .header("content-type", "image/png")
-                .uri(URI.create("http://localhost:4000/screenshot?url=" + url))
+                .uri(URI.create(urlServer + url))
                 .build();
 
         InputStream image = client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream())
@@ -88,20 +77,14 @@ public class ServerExpressConnector {
     }
 
     public void saveImage(BufferedImage bufferedImage) throws IOException {
-        File outputfile = new File( "D:\\Desktop\\imagefaing.png");
+        File outputfile = new File("D:\\Desktop\\imagefeing.png");
         ImageIO.write(bufferedImage, "png", outputfile);
     }
 
     public BufferedImage getScreenShotFeing(String url) throws IOException {
-
         ResponseEntity<byte[]> response = pageWatcherProxy.getScreenShot(url);
-
-
-
-        InputStream im = new ByteArrayInputStream(response.getBody());
-
-        LOGGER.info("screenShot in feing");
-
-        return ImageIO.read(im);
+        InputStream attachment = new ByteArrayInputStream(response.getBody());
+        LOGGER.info("screenshot taken via feing");
+        return ImageIO.read(attachment);
     }
 }

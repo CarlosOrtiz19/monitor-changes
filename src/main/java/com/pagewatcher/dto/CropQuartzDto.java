@@ -11,5 +11,4 @@ public class CropQuartzDto {
     private String message;
     private LocalDateTime created;
     private Boolean changed;
-
 }

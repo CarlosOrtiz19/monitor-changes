@@ -4,7 +4,7 @@ import com.pagewatcher.config.proxi.NotificationProxy;
 import com.pagewatcher.model.Crop;
 import com.pagewatcher.model.MonitoringJob;
 import com.pagewatcher.model.Details;
-import com.pagewatcher.repository.CropQuartzRepository;
+import com.pagewatcher.repository.MonitoringJobRepository;
 import com.pagewatcher.repository.DetailsRepository;
 import com.pagewatcher.service.CropService;
 import org.quartz.*;
@@ -21,7 +21,7 @@ public class CropQuartzJob implements Job {
     private static final Logger log = LoggerFactory.getLogger(CropQuartzJob.class);
 
     @Autowired
-    private CropQuartzRepository cropQuartzRepository;
+    private MonitoringJobRepository monitoringJobRepository;
 
     @Autowired
     private CropService cropService;
@@ -43,18 +43,15 @@ public class CropQuartzJob implements Job {
 
         /* Get message from database by id */
         long id = Long.parseLong(cropQuartzId);
-        Optional<MonitoringJob> cropQuartz = cropQuartzRepository.findById(id);
+        Optional<MonitoringJob> monitoringJob = monitoringJobRepository.findById(id);
 
-        if(cropQuartz.isPresent()){
-            log.info("cropQuartz id {}", cropQuartz.get().getId());
+        if(monitoringJob.isPresent()){
+            log.info("cropQuartz id {}", monitoringJob.get().getId());
 
-            Crop crop = cropQuartz.get().getCrop();
+            Crop crop = monitoringJob.get().getCrop();
             boolean isSimilar = cropService.compareCrops(crop);
-            Details details = new Details();
-            details.setLastMonitoring(getCurrentDate());
-            details.setStateLastMonitoring(isSimilar);
-            details.setCrop(crop);
-            detailsRepository.save(details);
+
+            updateDetails(crop, isSimilar);
 
             if(!isSimilar){
                 notificationProxy.sendNotificationTo(crop.getEmail());
@@ -70,6 +67,14 @@ public class CropQuartzJob implements Job {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void updateDetails(Crop crop, boolean isSimilar) {
+        Details details = new Details();
+        details.setLastMonitoring(getCurrentDate());
+        details.setStateLastMonitoring(isSimilar);
+        details.setCrop(crop);
+        detailsRepository.save(details);
     }
 
     private String getCurrentDate() {

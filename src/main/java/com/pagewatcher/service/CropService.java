@@ -7,7 +7,7 @@ import com.pagewatcher.mapper.CropMapper;
 import com.pagewatcher.model.Crop;
 import com.pagewatcher.model.ImageCrop;
 import com.pagewatcher.model.MonitoringJob;
-import com.pagewatcher.repository.CropQuartzRepository;
+import com.pagewatcher.repository.MonitoringJobRepository;
 import com.pagewatcher.repository.CropRepository;
 import com.pagewatcher.repository.ImageCropRepository;
 import com.pagewatcher.service.utils.CompareImages;
@@ -42,7 +42,7 @@ public class CropService {
     @Autowired
     private QuartzConfig quartzConfig;
     @Autowired
-    private CropQuartzRepository cropQuartzRepository;
+    private MonitoringJobRepository monitoringJobRepository;
 
     @Autowired
     private CropMapper cropMapper;
@@ -91,18 +91,10 @@ public class CropService {
             LOGGER.info("Crop image saved ");
             crop.setImageCrop(imageCrop);
 
-            //test
-            // ImageIO.read((ImageInputStream) screenShot);
-            String filePath = "D:\\Desktop\\image15.png";
-            try {
-                ImageIO.write(cropImage, "png", new File(filePath));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
-    private BufferedImage getScreenShot(Crop crop) {
+    public BufferedImage getScreenShot(Crop crop) {
         BufferedImage screenShot = null;
         try {
             //screenShot = serverExpressConnector.getScreenShot(crop.getUrl());
@@ -115,7 +107,7 @@ public class CropService {
         return screenShot;
     }
 
-    private BufferedImage getCropImage(Crop crop) {
+    public BufferedImage getCropImage(Crop crop) {
         BufferedImage screenShot = getScreenShot(crop);
 
         if (screenShot == null || crop == null) {
@@ -143,7 +135,7 @@ public class CropService {
 
     public boolean compareCrops(Crop crop) {
         boolean areEquals = false;
-        //actual crop
+        //current crop
         BufferedImage cropImage = getCropImage(crop);
         //crop in bd
         BufferedImage cropInbd = null;
@@ -163,10 +155,9 @@ public class CropService {
         return areEquals;
     }
 
-
     private void configureMonitoringJob(Crop crop) {
         MonitoringJob monitoringJob = new MonitoringJob();
-        cropQuartzRepository.save(monitoringJob);
+        monitoringJobRepository.save(monitoringJob);
         crop.setMonitoringJob(monitoringJob);
         cropRepository.save(crop);
 
