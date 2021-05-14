@@ -87,17 +87,12 @@ function PersistentDrawerLeft(props) {
     const {history} = props;
     const itemsList = [
         {
-            text: "Home",
-            icon: <HomeIcon/>,
-            onClick: () => history.push("/home")
-        },
-        {
-            text: "Create",
+            text: "Créer",
             icon: <AddCircleOutlineIcon/>,
             onClick: () => history.push("/create")
         },
         {
-            text: "My monitors",
+            text: "Mes observateurs",
             icon: <DashboardIcon/>,
             onClick: () => history.push("/my-monitors")
         }

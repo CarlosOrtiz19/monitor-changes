@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const BASE_URL = "http://localhost:8080/watch";
-const URL_NODE_SERVER = "http://localhost:4001";
+const URL_NODE_SERVER = "http://localhost:4000";
 
 class ImageService {
 
@@ -10,14 +10,7 @@ class ImageService {
     }
 
     async getScreenShot(url) {
-        return axios.get(URL_NODE_SERVER + "/screenshot/?url=" + url, {
-            responseType: 'arraybuffer'
-        }).then(response => {
-            const buffer = Buffer.from(response.data, 'base64');
-        }).catch(ex => {
-            console.error(ex);
-        });
-
+        return axios.get(URL_NODE_SERVER + "/screenshot/?url=" + url,{ responseType: "blob" })
     }
 
     async getAllDetailsByCropId(id) {
@@ -44,9 +37,7 @@ class ImageService {
                 'Content-Type': 'application/json'
             }
         }
-
         return axios.get(BASE_URL + "/search/" + email, config)
-
     }
 
     async saveInfoCrop(_crop, _url, _email) {
@@ -67,7 +58,6 @@ class ImageService {
 
         return axios.post(BASE_URL + "/saveCropInfo/", crop, config)
     }
-
 
 }
 

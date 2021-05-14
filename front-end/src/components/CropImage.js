@@ -1,12 +1,7 @@
-import {Button} from '@material-ui/core';
-import React, {useState, useCallback} from 'react'
-import ReactDOM from 'react-dom'
-import ReactCrop, {makeAspectCrop} from 'react-image-crop'
-import 'react-image-crop/dist/ReactCrop.css'
-import ImageCard from './Cards'
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-
+import { Button } from '@material-ui/core';
+import React from 'react';
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 class CropImage extends React.Component {
 
@@ -52,19 +47,7 @@ class CropImage extends React.Component {
         }
     }
 
-    confirmImage = () => {
-        this.state.images.push(this.state.crop);
-        console.log(this.state.images.length);
-        console.log(this.state.images[this.state.images.length - 1])
-        if (this.state.images.length > 1) {
-            if (this.state.images[0] === this.state.images[1]) {
-                console.log("identicals")
-            } else {
-                console.log("non identicals")
-            }
-        }
-        return <ImageCard src={this.state.images[0]}/>
-    }
+
 
     onCropChange = (crop) => {
         this.setState({crop});

@@ -1,18 +1,14 @@
-import JsoupService from '../Service/JsoupService'
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Button, Typography, Grid, Tooltip, IconButton, InputAdornment } from '@material-ui/core';
+import { TextField, Button, Typography, Grid, InputAdornment } from '@material-ui/core';
 import axios from 'axios';
-import ProgressIndicator from '../Utils/ProgressIndicator';
 import CropImage from './CropImage';
 import CropImageV2 from './CropImageV2';
 import Paper from '@material-ui/core/Paper';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import SearchIcon from '@material-ui/icons/Search';
 import HttpIcon from '@material-ui/icons/Http';
 import Logo from "../images/imgTemp.jpg"
-import Progress from '../Utils/Progress';
 import { TouchBallLoading } from 'react-loadingg';
+import CropImageService from "../Service/CropImageService";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -20,9 +16,6 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         width: "75%",
-        // marginLeft: theme.spacing(5),
-        // marginRight: theme.spacing(5),
-        // padding: theme.spacing(5),
         margin: 'auto',
         variant: 'outlined'
         //talla papel
@@ -43,16 +36,18 @@ export default function ShowWebPage(props) {
 
     const takeScreenShot = (_url) => {
         setisLoading(true)
-        axios.get("http://localhost:4000/screenshot?url=" + url, { responseType: "blob" })
-            .then(function (response) {
-                var reader = new window.FileReader();
-                reader.readAsDataURL(response.data);
-                reader.onload = function () {
-                    setisLoading(false)
-                    var imageDataUrl = reader.result;
-                    setscreenShot(imageDataUrl)
-                }
-            });
+        CropImageService.getScreenShot(url).then(function (response) {
+            var reader = new window.FileReader();
+            reader.readAsDataURL(response.data);
+            reader.onload = function () {
+                setisLoading(false)
+                var imageDataUrl = reader.result;
+                setscreenShot(imageDataUrl)
+            }
+        });
+
+       // axios.get("http://localhost:4001/screenshot?url=" + url, { responseType: "blob" })
+
     }
 
     const handleSubmit = async (evt) => {
@@ -143,7 +138,7 @@ export default function ShowWebPage(props) {
                             <CropImageV2 src={screenShot}
                                 url={url}
                                 restart={restart}
-                                />
+                            />
                             <Grid />
                         </>
                     }

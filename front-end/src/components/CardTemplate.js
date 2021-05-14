@@ -1,24 +1,18 @@
-import { Button, CardActionArea, Divider, Paper, CardHeader, Avatar, IconButton, Tooltip } from '@material-ui/core';
+import { CardActionArea, CardContent, Divider, IconButton, Paper, Tooltip } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import { CardContent, Grid } from '@material-ui/core';
 import CardMedia from '@material-ui/core/CardMedia';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import React, { useState, useEffect } from "react";
-import ShowDetails from "../Utils/ShowDetails";
-import ShowImage from "../Utils/ShowImage";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import randomColor from "randomcolor";
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import DeleteCrop from '../Utils/DeleteCrop';
-import JsoupService from '../Service/JsoupService';
+import React, { useState } from "react";
 import swal from 'sweetalert';
+import CropImageService from '../Service/CropImageService';
+import DeleteCrop from '../Utils/DeleteCrop';
+import ShowDetails from "../Utils/ShowDetails";
+import ShowImage from "../Utils/ShowImage";
 
 
 
@@ -61,12 +55,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ImageCard(props) {
     const classes = useStyles();
-    const [image, setimage] = useState(null)
     const [showImage, setshowImage] = useState(false)
     const [showDetails, setshowDetails] = useState(false)
-    const [deleteCrop, setdeleteCrop] = useState(false)
-    const [color, setcolor] = useState(null)
-    const [avatarLetter, setavatarLetter] = useState("")
 
     const deleteCard = () => {
 
@@ -78,8 +68,7 @@ export default function ImageCard(props) {
             dangerMode: true,
         }).then(willDelete => {
             if (willDelete) {
-               
-                JsoupService.deleteCropByCropId(props.monitor.id).then(res => {
+                CropImageService.deleteCropByCropId(props.monitor.id).then(res => {
                     swal({
                         title: "Done!",
                         text: "user is deleted",
@@ -91,45 +80,15 @@ export default function ImageCard(props) {
                         props.deleteMonitor()
                     }
                 })
-
-                
-               
             }
             
         })
-       
-        //setdeleteCrop(true)
     }
-    const confirmDelete = async () => {
-        console.log("confirmed")
-
-
-    }
-
     const modifyCard = (e) => {
         console.log(e)
 
     }
 
-    const generateColor = () => {
-        let color = randomColor();
-        setcolor(color)
-    }
-
-    const sliceAvatarLetter = () => {
-        const text = props.monitor.imageCrop.name;
-        if (text) {
-            setavatarLetter(text.slice(0, 1))
-        }
-    }
-    useEffect(() => {
-        sliceAvatarLetter()
-        generateColor()
-        return () => {
-            setcolor(null);
-            setavatarLetter("")
-        }
-    }, [props.monitor])
     const showImageFuction = (e) => {
         console.log(showImage)
         setshowImage(true)
@@ -143,7 +102,6 @@ export default function ImageCard(props) {
     const handleClose = () => {
         setshowDetails(false)
         setshowImage(false)
-        setdeleteCrop(false)
     };
     return (
         <>
@@ -205,77 +163,10 @@ export default function ImageCard(props) {
                     {showDetails &&
                         <ShowDetails crop={props.monitor} handleClose={handleClose} />
                     }
-
-                    {/* {deleteCrop &&
-                        <DeleteCrop handleClose={handleClose} confirmDelete={confirmDelete} />
-                    } */}
-
                 </CardActions>
-
-                {/* <CardActions>
-
-                    <div className="container" >
-                        <div className="row justify-content-end">
-                            <div className="col-6 p-0 m-0 align-self-end">
-                                <Button
-                                    style={{ textTransform: 'none' }}
-                                    color="primary"
-                                    onClick={showDetailsFunction}>Plus de détails
-                        </Button>
-                            </div>
-                        </div>
-                    </div>
-
-                   
-                </CardActions> */}
             </Card>
-            {/* <div className="container" >
-                <div className="row justify-content-start">
-
-                    <div className="col-2 ">
-                        <EditIcon />
-                    </div>
-                    <div className="col-2 ">
-                        <DeleteIcon color='primary' />
-                    </div>
-                </div>
-            </div> */}
-
             <Divider />
-
         </>
-
-        // <Card className={classes.root}>
-        //     <CardHeader
-        //         avatar={
-        //             <Avatar aria-label="recipe" className={classes.avatar}>
-        //                 R
-        //             </Avatar>
-        //         }
-        //         action={
-        //             <IconButton aria-label="settings">
-        //                 <MoreVertIcon/>
-        //             </IconButton>
-        //         }
-        //         title={props.monitor.imageCrop.name}
-        //         subheader={props.monitor.createDate}
-
-        //     />
-        //     <Divider/>
-        //     <CardMedia
-        //         className={classes.media}
-        //         image={`data:image/jpeg;base64,${props.monitor.imageCrop.data}`}
-        //         title="image"
-        //     />
-        //     <Divider/>
-
-
-        //     <CardContent>
-        //         <Typography variant="body2" color="textSecondary" component="p">
-        //             image to monitoring
-        //         </Typography>
-        //     </CardContent>
-        // </Card>
     );
 }
 

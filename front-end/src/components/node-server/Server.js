@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const express = require('express');
 const app = express();
 
-const port = process.env.PORT || 4001;
+const port = process.env.PORT || 4000;
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", process.env.ORIGIN || "*");
@@ -41,7 +41,7 @@ const eureka = new Eureka({
     app: 'node-server',
     hostName: 'localhost',
     ipAddr: '127.0.0.1',
-    statusPageUrl: 'http://localhost:4001',
+    statusPageUrl: 'http://localhost:4000',
     instanceId: 'node1',
     port: {
       '$': 4001,

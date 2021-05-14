@@ -2,36 +2,11 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ReactCrop from 'react-image-crop';
 import { TextField, Button, Typography, Grid, InputAdornment } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import axios from 'axios';
-import JsoupService from '../Service/JsoupService';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import useSetTime from "../Utils/useSetTime"
 import swal from 'sweetalert';
 import Progress from '../Utils/Progress';
-import { TouchBallLoading } from 'react-loadingg';
-import { BoxLoading } from 'react-loadingg';
-
-
-function generateDownload(canvas, crop) {
-    if (!crop || !canvas) {
-        return;
-    }
-
-    canvas.toBlob(
-        (blob) => {
-            const previewUrl = window.URL.createObjectURL(blob);
-
-            const anchor = document.createElement('a');
-            anchor.download = 'cropPreview.png';
-            anchor.href = URL.createObjectURL(blob);
-            anchor.click();
-
-            window.URL.revokeObjectURL(previewUrl);
-        },
-        'image/png',
-        1
-    );
-}
+import CropImageService from '../Service/CropImageService';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -105,7 +80,8 @@ export default function CropImageV2(props) {
     }, [completedCrop]);
 
     const saveInformation = async () => {
-        await JsoupService.saveInfoCrop(crop, props.url, email).then(res => {
+
+        await CropImageService.saveInfoCrop(crop, props.url, email).then(res => {
             if (res) {
                 setisLoading(false)
                 swal({
@@ -138,7 +114,6 @@ export default function CropImageV2(props) {
     }
 
     return (
-
         <div className="container">
 
             <ReactCrop
@@ -148,29 +123,6 @@ export default function CropImageV2(props) {
                 onChange={(c) => setCrop(c)}
                 onComplete={(c) => setCompletedCrop(c)}
             />
-
-            {/* <div>
-                <canvas
-                    ref={previewCanvasRef}
-                    // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
-                    style={{
-                        //width: 300,
-                        height: 300
-                    }}
-                />
-            </div> */}
-
-
-
-            {/* <Button
-                type="button"
-                disabled={!completedCrop?.width || !completedCrop?.height}
-                onClick={() =>
-                    generateDownload(previewCanvasRef.current, completedCrop)
-                }
-            >
-                Download cropped image
-            </Button> */}
             <form onSubmit={handleSubmit} className="p-3">
                 <div className="row justify-content-between" >
                     <div className="col-8">
@@ -227,9 +179,9 @@ export default function CropImageV2(props) {
                 </div>
 
                 {isLoading &&
-                <div className="p-2">
-                    <Progress/>
-                </div>
+                    <div className="p-2">
+                        <Progress />
+                    </div>
                 }
 
                 <div className="row">
@@ -241,26 +193,11 @@ export default function CropImageV2(props) {
                         variant="contained"
                         color="primary"
                         disabled={!completedCrop?.width || !completedCrop?.height}
-
                     >
                         save crop
                     </Button>
-
-
                 </div>
-
-
-
             </form>
-
-
-
-
-
-
-
-
-
         </div>
     );
 }

@@ -1,6 +1,6 @@
 import { Button, Dialog, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import React, { useEffect, useState } from "react";
-import JsoupService from '../Service/JsoupService';
+import CropImageService from "../Service/CropImageService"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -36,7 +36,8 @@ export default function ShowDetails(props) {
     const [details, setdetails] = useState([])
 
     const getDetailsByCropId = async () => {
-        const response = await JsoupService.getAllDetailsByCropId(props.crop.id)
+    
+        const response = await CropImageService.getAllDetailsByCropId(props.crop.id)
         console.log(response.data)
         if (response) {
             setdetails(response.data)

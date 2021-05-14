@@ -1,7 +1,7 @@
 import { Grid, IconButton, makeStyles, Paper, TextField, Tooltip } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import React, { useEffect, useState } from "react";
-import JsoupService from "../Service/JsoupService";
+import React, { useState } from "react";
+import CropImageService from '../Service/CropImageService';
 import CardTemplate from './CardTemplate';
 
 const useStyles = makeStyles((theme) => ({
@@ -33,20 +33,13 @@ export default function MonitorByEmail() {
     }
 
     const findMonitorsBYemail = async () => {
-        const response = await JsoupService.getAllMonitorsByEmail(email);
+        
+        const response = await CropImageService.getAllMonitorsByEmail(email);
         console.log(response)
         if (response) {
             setmonitors(response.data)
         }
     }
-
-    //  useEffect(() => {
-
-    //      findMonitorsBYemail()
-    //      return () => {
-    //          setmonitors([])
-    //      }
-    //  }, [])
 
     const handleSubmit = (event) => {
         findMonitorsBYemail(email)
